@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -7,5 +7,10 @@
         <Nullable>enable</Nullable>
         <RootNamespace>VoitingApp</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+    </ItemGroup>
 
 </Project>
