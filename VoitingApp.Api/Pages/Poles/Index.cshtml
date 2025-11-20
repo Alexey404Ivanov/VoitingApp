@@ -263,18 +263,18 @@
             <h2>Новый опрос</h2>
 
 
-            <div class="section-title">Вопрос</div>
-            <input style="width:100%; padding:10px; border-radius:8px; background:#3a3a3a; border:none; color:white;" placeholder="Введите вопрос..." />
+            <div class="section-title" >Вопрос</div>
+            <input id="questionInput" style="width:100%; padding:10px; border-radius:8px; background:#3a3a3a; border:none; color:white;" placeholder="Введите вопрос..." />
 
 
             <div class="section-title">Варианты ответа</div>
 
 
             <div id="answers"></div>
-
+            
 
             <button class="add-answer" onclick="addAnswer()">Добавить ответ...</button>
-            <div class="hint">Можно добавить ещё 9 вариантов ответа.</div>
+            <div class="hint" id="hint">Можно добавить ещё 9 вариантов ответа.</div>
 
 
             <div class="settings">
@@ -289,7 +289,7 @@
 
             <div class="buttons">
                 <div class="btn cancel" id="modalClose">Отмена</div>
-                <div class="btn create">Создать</div>
+                <div class="btn create" id="poleCreate">Создать</div>
             </div>
         </div>
     </div>

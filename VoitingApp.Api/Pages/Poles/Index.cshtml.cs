@@ -18,4 +18,9 @@ public class IndexModel : PageModel
     {
         PolesDto = _client.GetFromJsonAsync<List<PoleDto>>("http://localhost:5000/api/poles").Result ?? [];
     }
+
+    public void OnPost()
+    {
+        
+    }
 }
