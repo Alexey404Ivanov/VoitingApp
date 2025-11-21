@@ -3,6 +3,11 @@
     ViewData["Title"] = Model.Question;
 }
 
+@section HeaderExtras
+{
+    <button id="btnBack" class="back-button">На главную</button>
+}
+
 <style>
     /* Стили, аналогичные Index */
     .page-header {
@@ -43,7 +48,7 @@
 
     .main-content {
         padding: 2rem;
-        max-width: 800px;
+        max-width: 1200px; /* Увеличено */
         margin: 0 auto;
     }
 
@@ -53,6 +58,20 @@
         padding: 2rem;
         border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .poll-question {
+        font-size: 2.5rem; /* Увеличено */
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+        text-align: center;
+    }
+
+    fieldset { /* Убрана рамка вокруг вариантов */
+        border: none;
+        padding: 0;
+        margin: 0;
     }
 
     .poll-options {
@@ -69,7 +88,6 @@
         border-radius: 8px;
         cursor: pointer;
         transition: background-color 0.2s ease;
-        border: 1px solid #e0e0e0;
     }
 
     .option-item:hover {
@@ -99,6 +117,12 @@
         background-color: #5a168a;
     }
 
+    .cancel-button {
+        background-color: #e0e0e0; /* серый фон */
+        color: #000;              /* чёрный шрифт */
+        border: none;
+    }
+
     /* Адаптивность */
     @@media (max-width: 768px) {
         .page-header {
@@ -110,38 +134,37 @@
         .main-content {
             padding: 1rem;
         }
+        .poll-question {
+            font-size: 1.8rem; /* Скорректировано для мобильных */
+        }
     }
 </style>
 
-<header class="page-header">
-    <h1>@Model.Question</h1>
-    <a href="/poles" class="back-button">Назад</a>
-</header>
+@* <header class="page-header"> *@
+@*     <h1>@Model.Question</h1> *@
+@*     <a href="/poles" class="back-button">Назад</a> *@
+@* </header> *@
 
 <main class="main-content" role="main">
     <div class="poll-details">
+        <h2 class="poll-question">@Model.Question</h2>
         <form method="post">
             <input type="hidden" asp-for="Id" />
             <fieldset>
-                <legend class="sr-only">Варианты ответа для опроса: @Model.Question</legend>
                 <div class="poll-options">
                     @foreach (var option in Model.Options)
                     {
                     <label class="option-item">
-                        @* @if (Model.IsMultipleChoice) *@
-                        @* { *@
-                        @* <input type="checkbox" name="selectedOptions" value="@option.Id"> *@
-                        @* } *@
-                        @* else *@
-                        @* { *@
                         <input type="radio" name="selectedOptions" value="@option.Id" required>
-                        @* } *@
                         @option.Text
                     </label>
                     }
                 </div>
             </fieldset>
-            <button type="submit" class="vote-button">Голосовать</button>
+            <button type="submit" id="voteBtn" class="vote-button">Голосовать</button>
         </form>
     </div>
 </main>
+
+
+<script src="/js/details.js"></script>
