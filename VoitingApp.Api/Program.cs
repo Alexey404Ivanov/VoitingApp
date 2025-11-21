@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using VoitingApp.Domain;
+using VoitingApp.Infrastructure;
 using VoitingApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);

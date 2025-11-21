@@ -1,4 +1,6 @@
-﻿namespace VoitingApp.Domain;
+﻿using VoitingApp.Domain;
+
+namespace VoitingApp.Infrastructure;
 
 public interface IPolesRepository
 {

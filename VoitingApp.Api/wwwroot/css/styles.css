@@ -82,6 +82,135 @@ body {
     font-size: 0.9rem;
     color: #666;
 }
+/* Полупрозрачный фон */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
+    z-index: 1000;
+}
+
+
+/* Модальное окно */
+.modal {
+    background: #2b2b2b;
+    color: white;
+    width: 420px;
+    max-height: 80vh;
+    border-radius: 16px;
+    padding: 24px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+
+h2 {
+    margin-top: 0;
+}
+
+
+.section-title {
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: #b388ff;
+    font-size: 14px;
+}
+
+
+.answer-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+
+.answer-row input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    background: #3a3a3a;
+    color: white;
+}
+
+
+.remove-btn {
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #bbb;
+    transition: 0.2s;
+}
+
+.remove-btn:hover {
+    color: #ff6b6b;
+}
+
+
+.add-answer {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 2px dashed #555;
+    background: #333;
+    color: #bbb;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+
+.hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #888;
+}
+
+
+.settings {
+    margin-top: 20px;
+}
+
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    margin: 6px 0;
+}
+
+
+.setting-item input {
+    margin-right: 8px;
+}
+
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+
+.btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+
+.cancel {
+    color: #bbb;
+}
+
+
+.create {
+    background: #b388ff;
+    color: black;
+    font-weight: bold;
+}
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {

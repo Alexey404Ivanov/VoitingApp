@@ -1,0 +1,72 @@
+
+@model List<PoleDto>
+
+@{
+    ViewData["Title"] = "Список опросов";
+}
+
+<header class="page-header">
+    <h1>Опросы</h1>
+    <button id="btnAdd" class="add-button">Добавить</button>
+</header>
+
+<main class="main-content" role="main">
+    <div class="poll-grid" id="pollGrid" aria-live="polite">
+        @if (Model.Any())
+        {
+            @foreach (var pole in Model)
+            {
+                <button class="poll-card" onclick="openPoll(@pole.Id)">
+                    <div>
+                        <div class="poll-title">@pole.Question</div>
+                    </div>
+                    <div class="poll-sub">@pole.Options.Count @(pole.Options.Count == 1 ? "вариант" : pole.Options.Count > 1 && pole.Options.Count < 5 ? "варианта" : "вариантов")</div>
+                </button>
+            }
+        }
+        else
+        {
+            <p>Опросы еще не созданы.</p>
+        }
+    </div>
+
+    <div class="modal-backdrop" id="modalBackdrop">
+        <div class="modal" id="modal">
+            <h2>Новый опрос</h2>
+
+
+            <div class="section-title" >Вопрос</div>
+            <input id="questionInput" style="width:100%; padding:10px; border-radius:8px; background:#3a3a3a; border:none; color:white;" placeholder="Введите вопрос..." />
+
+
+            <div class="section-title">Варианты ответа</div>
+
+
+            <div id="answers"></div>
+            
+
+            <button class="add-answer" onclick="addAnswer()">Добавить ответ...</button>
+            <div class="hint" id="hint">Можно добавить ещё 9 вариантов ответа.</div>
+
+
+            <div class="settings">
+                
+                <div class="setting-item">
+                    <input type="checkbox" id="multi" />
+                    <label for="multi">Выбор нескольких ответов</label>
+                </div>
+                
+            </div>
+
+
+            <div class="buttons">
+                <div class="btn cancel" id="modalClose">Отмена</div>
+                <div class="btn create" id="poleCreate">Создать</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/index.js"></script>
+    
+</main>
+

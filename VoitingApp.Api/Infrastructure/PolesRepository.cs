@@ -1,4 +1,6 @@
-﻿namespace VoitingApp.Domain;
+﻿using VoitingApp.Infrastructure;
+
+namespace VoitingApp.Domain;
 
 public class PolesRepository : IPolesRepository
 {
