@@ -1,4 +1,5 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿// File: VoitingApp.Api/wwwroot/js/details.js
+document.addEventListener('DOMContentLoaded', function () {
     const voteBtn = document.getElementById('voteBtn');
     const toastContainer = document.getElementById('toastContainer');
 
@@ -64,6 +65,16 @@
 
     voteBtn.addEventListener('click', function (e) {
         e.preventDefault();
+
+        // Проверка: есть ли выбранные варианты в ближайшей форме (или в документе)
+        const formScope = voteBtn.closest('form') || document;
+        const anyChecked = formScope.querySelector('input[type="radio"]:checked, input[type="checkbox"]:checked');
+
+        if (!anyChecked) {
+            showToast('Выберите хотя бы один вариант ответа');
+            return;
+        }
+
         const cancel = createCancelButton(voteBtn);
         voteBtn.replaceWith(cancel);
         showToast('Голос принят');

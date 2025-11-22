@@ -193,8 +193,24 @@ poleCreate.addEventListener("click", function() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: json
+    })
+    .then(r => {
+        if (!r.ok) throw new Error("Ошибка создания опроса");
+        return r.json();
+    })
+    .then(id => {
+        window.location.href = `/poles/${id}`;
+    })
+    .catch(err => {
+        showWarning(err.message);
     });
-
-    // Можно закрыть модальное окно
-    modalBackdrop.style.display = "none";
+    
+    
+    // if (response.status === 'Error') {
+    //    
+    // }
+    // else {
+    //     // Можно закрыть модальное окно
+    //     modalBackdrop.style.display = "none";
+    // }
 });

@@ -21,11 +21,11 @@ public class PolesController: Controller
         return View("Index", poles);
     }
 
-    [HttpGet("/poles/{id:guid}")]
-    public async Task<IActionResult> Details(Guid id)
+    [HttpGet("/poles/{poleId:guid}")]
+    public async Task<IActionResult> Details([FromRoute] Guid poleId)
     {
         var pole = await _client.GetFromJsonAsync<PoleDto>(
-            $"http://localhost:5000/api/poles/{id}");
+            $"http://localhost:5000/api/poles/{poleId}");
 
         return View("Details", pole);
     }

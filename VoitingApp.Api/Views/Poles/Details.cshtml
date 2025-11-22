@@ -276,16 +276,17 @@
     }
 </style>
 
-@* <header class="page-header"> *@
-@*     <h1>@Model.Question</h1> *@
-@*     <a href="/poles" class="back-button">Назад</a> *@
-@* </header> *@
 
 <main class="main-content" role="main">
+    <div id="poleData" 
+         data-model="@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model))">
+    </div>
+    
+    
     <div class="poll-details">
         <h2 class="poll-question">@Model.Question</h2>
         <form method="post" id="pollForm">
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Id"/>
             <fieldset>
                 <div class="poll-options">
                     @foreach (var option in Model.Options)
