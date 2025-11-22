@@ -7,4 +7,5 @@ public class PoleDto
     public Guid Id { get; set; }
     public string Question { get; set; }
     public List<OptionDto> Options { get; set; }
+    public bool IsMultipleChoice { get; set; }
 }

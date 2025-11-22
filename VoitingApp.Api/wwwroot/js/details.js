@@ -25,7 +25,7 @@
         // Добавляем в контейнер
         toastContainer.prepend(toast);
 
-        // Делаем ререндер и включаем класс show для плавного появления
+        // Делаем рендер и включаем класс show для плавного появления
         requestAnimationFrame(() => {
             // небольшой следующий кадр для корректного запуска transition
             requestAnimationFrame(() => toast.classList.add('show'));

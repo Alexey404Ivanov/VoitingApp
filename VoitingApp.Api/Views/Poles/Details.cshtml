@@ -267,6 +267,13 @@
             font-size: 1.8rem; /* Скорректировано для мобильных */
         }
     }
+
+    /* (существующие стили оставлены без изменений; при необходимости вставьте ваши стили) */
+    .validation-warning {
+        color: #e53935;
+        margin-top: 1rem;
+        font-weight: 600;
+    }
 </style>
 
 @* <header class="page-header"> *@
@@ -277,25 +284,72 @@
 <main class="main-content" role="main">
     <div class="poll-details">
         <h2 class="poll-question">@Model.Question</h2>
-        <form method="post">
+        <form method="post" id="pollForm">
             <input type="hidden" asp-for="Id" />
             <fieldset>
                 <div class="poll-options">
                     @foreach (var option in Model.Options)
                     {
-                        <label class="option-item">
-                            <input type="radio" name="selectedOptions" value="@option.Id" required>
-                            @option.Text
-                        </label>
+                        if (Model.IsMultipleChoice)
+                        {
+                            <label class="option-item">
+                                <input type="checkbox" name="selectedOptions" value="@option.Id" class="option-checkbox">
+                                @option.Text
+                            </label>
+                        }
+                        else
+                        {
+                            <label class="option-item">
+                                <input type="radio" name="selectedOptions" value="@option.Id" required>
+                                @option.Text
+                            </label>
+                        }
                     }
                 </div>
             </fieldset>
+
+            <div id="validationContainer">
+                @* Сюда будет выводиться предупреждение для множественного выбора *@
+            </div>
+
             <button type="submit" id="voteBtn" class="vote-button">Голосовать</button>
         </form>
     </div>
-    
+
     <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 </main>
 
+<script> 
+    (function () {
+    var form = document.getElementById('pollForm');
+    if (!form) return;
+
+    var isMultiple = @(Model.IsMultipleChoice.ToString().ToLowerInvariant());
+
+    form.addEventListener('submit', function (e) {
+    if (!isMultiple) return; // для одиночного выбора браузер сам проверит required
+
+    var checkedCount = form.querySelectorAll('input.option-checkbox:checked').length;
+    var container = document.getElementById('validationContainer');
+
+    // Удаляем старое предупреждение
+    var old = document.getElementById('validationWarning');
+    if (old) old.remove();
+
+    if (checkedCount === 0) {
+    e.preventDefault();
+    var div = document.createElement('div');
+    div.id = 'validationWarning';
+    div.className = 'validation-warning';
+    div.textContent = 'Пожалуйста, выберите хотя бы один вариант.';
+    container.appendChild(div);
+    // для удобства фокусируемся на первом чекбоксе
+    var firstCheckbox = form.querySelector('input.option-checkbox');
+    if (firstCheckbox) firstCheckbox.focus();
+    return false;
+}
+});
+})();
+</script>
 
 <script src="/js/details.js"></script>

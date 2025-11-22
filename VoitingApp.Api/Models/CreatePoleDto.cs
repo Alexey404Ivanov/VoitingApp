@@ -9,4 +9,6 @@ public class CreatePoleDto
     public string Question { get; set; }
     [Required]
     public List<CreateOptionDto> Options { get; set; }
+    [Required]
+    public bool IsMultipleChoice { get; set; }
 }

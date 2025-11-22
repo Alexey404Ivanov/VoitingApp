@@ -176,13 +176,13 @@ poleCreate.addEventListener("click", function() {
     if (hasError) return; // отменяем отправку
 
     // 3. Получаем флаг "несколько ответов"
-    const multipleAnswers = document.getElementById("multi")?.checked;
+    const IsMultipleChoice = document.getElementById("multi")?.checked;
 
     // 4. Собираем объект
     const questionObj = {
         question: question,
         options: answers,
-        // multipleAnswers: multipleAnswers
+        IsMultipleChoice: IsMultipleChoice
     };
 
     // 5. Сериализуем в JSON

@@ -52,6 +52,6 @@ public class PolesRepository : IPolesRepository
     
     private static PoleEntity Clone(Guid id, PoleEntity pole)
     {
-        return new PoleEntity(id, pole.Question, pole.CreatedAt, pole.Options);
+        return new PoleEntity(id, pole.Question, pole.CreatedAt, pole.Options, pole.IsMultipleChoice);
     }
 }
