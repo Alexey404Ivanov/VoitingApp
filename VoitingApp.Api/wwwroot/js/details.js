@@ -1,4 +1,4 @@
-﻿// javascript
+﻿// File: `VoitingApp.Api/wwwroot/js/details.js`
 document.addEventListener('DOMContentLoaded', function () {
     const voteBtn = document.getElementById('voteBtn');
     const toastContainer = document.getElementById('toastContainer');
@@ -43,7 +43,50 @@ document.addEventListener('DOMContentLoaded', function () {
         return () => hideToast(toast);
     }
 
-    function createCancelButton(original) {
+    function setInputsDisabled(formScope, disabled) {
+        const inputs = formScope.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+        inputs.forEach(i => i.disabled = !!disabled);
+        // опционально можно добавить/удалить класс для визуального состояния
+        const wrappers = formScope.querySelectorAll('.option-item');
+        wrappers.forEach(w => {
+            if (disabled) w.classList.add('option-disabled');
+            else w.classList.remove('option-disabled');
+        });
+    }
+
+    function applyResultsToOptions(results, formScope) {
+        if (!results || !Array.isArray(results.options)) return;
+
+        const totalVotes = results.options.reduce(
+            (sum, o) => sum + (o.votesCount || 0),
+            0
+        );
+
+        const safeTotal = totalVotes === 0 ? 1 : totalVotes;
+        results.options.forEach(option => {
+            const optionId = option.id;
+            const votes = option.votesCount || 0;
+            const percent = Math.round((votes / safeTotal) * 100);
+
+            const input = formScope.querySelector('input[value="' + optionId + '"]');
+            if (!input) return;
+
+            const wrapper = input.closest('.option-item') || input.parentElement;
+            if (!wrapper) return;
+            wrapper.classList.add('option-with-results');
+
+            let resultSpan = wrapper.querySelector('.option-result');
+            if (!resultSpan) {
+                resultSpan = document.createElement('span');
+                resultSpan.className = 'option-result';
+                wrapper.appendChild(resultSpan);
+            }
+
+            resultSpan.textContent = votes + ' (' + percent + '%)';
+        });
+    }
+
+    function createCancelButton(original, selectedIdsAtVote, poleId, formScope) {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.id = 'cancelBtn';
@@ -51,51 +94,38 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.textContent = 'Отменить голос';
 
         btn.addEventListener('click', function () {
-            btn.replaceWith(original);
+            
+            fetch(`/api/poles/${poleId}/vote`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(selectedIdsAtVote)
+            })
+                .then(r => {
+                    if (!r.ok) throw new Error("Ошибка голосования");
+                })
+            // Логируем и показываем тост
+            // console.log('Cancel payload:', JSON.stringify(payload));
             showToast('Голос отменен');
+
+            // Убираем результаты с интерфейса: удаляем .option-result и сбрасываем классы
+            try {
+                const resultSpans = formScope.querySelectorAll('.option-result');
+                resultSpans.forEach(s => s.remove());
+
+                const withResults = formScope.querySelectorAll('.option-with-results');
+                withResults.forEach(w => w.classList.remove('option-with-results'));
+            } catch (e) {
+                console.error('Ошибка при очистке результатов:', e);
+            }
+
+            // Восстанавливаем состояние: включаем inputs и возвращаем кнопку
+            setInputsDisabled(formScope, false);
+            btn.replaceWith(original);
         });
 
         return btn;
     }
 
-    function applyResultsToOptions(results, formScope) {
-        if (!results || !Array.isArray(results.options)) return;
-
-        // общее количество голосов
-        const totalVotes = results.options.reduce(
-            (sum, o) => sum + (o.votesCount || 0),
-            0
-        );
-
-        // если нет голосов — считаем total = 1 чтобы корректно показать 0%
-        const safeTotal = totalVotes === 0 ? 1 : totalVotes;
-        results.options.forEach(option => {
-            const optionId = option.id;
-            const votes = option.votesCount || 0;
-            const percent = Math.round((votes / safeTotal) * 100);
-
-            // ищем input по value == id
-            const input = formScope.querySelector('input[value="' + optionId + '"]');
-            if (!input) return;
-
-            // получаем wrapper (label.option-item)
-            const wrapper = input.closest('.option-item') || input.parentElement;
-            if (!wrapper) return;
-            wrapper.classList.add('option-with-results');
-
-            // если результат уже добавлен, обновим, иначе создадим и поместим в конец
-            let resultSpan = wrapper.querySelector('.option-result');
-            if (!resultSpan) {
-                resultSpan = document.createElement('span');
-                resultSpan.className = 'option-result';
-                // вставляем в конец, чтобы всегда быть справа
-                wrapper.appendChild(resultSpan);
-            }
-
-            resultSpan.textContent = votes + ' (' + percent + '%)';
-        });
-    }
-    
     voteBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
@@ -118,10 +148,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const checkedRadio = formScope.querySelector('input[type="radio"]:checked');
             if (checkedRadio) optionsIds.push(String(checkedRadio.value));
         }
-        
-        
-        console.log(`/api/poles/${poleId}/vote`);
 
+        // Сохраняем выбранные id на момент голосования
+        const selectedAtVote = optionsIds.slice();
+
+        // Отключаем возможность менять выбор
+        setInputsDisabled(formScope, true);
+
+        // Создаём кнопку "Отменить голос" с замыканием выбранных id
+        const cancelBtn = createCancelButton(voteBtn, selectedAtVote, poleId, formScope);
+        voteBtn.replaceWith(cancelBtn);
+        showToast('Голос принят');
+
+        // Отправляем голос и запрашиваем результаты (опционально можем ожидать и только потом менять UI)
         fetch(`/api/poles/${poleId}/vote`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -144,10 +183,14 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(err => {
                 console.error(err);
                 showToast('Произошла ошибка при голосовании');
-            });
 
-        const cancel = createCancelButton(voteBtn);
-        voteBtn.replaceWith(cancel);
-        showToast('Голос принят');
+                // при ошибке восстанавливаем интерактивность и кнопку
+                try {
+                    const currentCancel = formScope.querySelector('#cancelBtn');
+                    if (currentCancel && currentCancel.parentNode) currentCancel.replaceWith(voteBtn);
+                } finally {
+                    setInputsDisabled(formScope, false);
+                }
+            });
     });
 });
