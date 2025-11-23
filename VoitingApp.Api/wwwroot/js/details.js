@@ -1,5 +1,4 @@
-﻿// File: `VoitingApp.Api/wwwroot/js/details.js`
-document.addEventListener('DOMContentLoaded', function () {
+﻿document.addEventListener('DOMContentLoaded', function () {
     const voteBtn = document.getElementById('voteBtn');
     const toastContainer = document.getElementById('toastContainer');
 
