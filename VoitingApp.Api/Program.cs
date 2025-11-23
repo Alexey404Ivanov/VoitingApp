@@ -6,6 +6,13 @@ using VoitingApp.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+    logging.AddDebug();
+});
+
+
 builder.Services.AddControllers();   
 
 builder.Services.AddEndpointsApiExplorer(); 
@@ -39,6 +46,16 @@ if (app.Environment.IsDevelopment())
     
     app.UseSwaggerUI();
 }
+
+app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Incoming: {context.Request.Method} {context.Request.Path}");
+    await next();
+    Console.WriteLine($"Outgoing: {context.Response.StatusCode}");
+});
+
 
 app.MapControllers();                
 

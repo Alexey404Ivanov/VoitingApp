@@ -1,4 +1,4 @@
-﻿// File: VoitingApp.Api/wwwroot/js/details.js
+﻿// javascript
 document.addEventListener('DOMContentLoaded', function () {
     const voteBtn = document.getElementById('voteBtn');
     const toastContainer = document.getElementById('toastContainer');
@@ -58,6 +58,44 @@ document.addEventListener('DOMContentLoaded', function () {
         return btn;
     }
 
+    function applyResultsToOptions(results, formScope) {
+        if (!results || !Array.isArray(results.options)) return;
+
+        // общее количество голосов
+        const totalVotes = results.options.reduce(
+            (sum, o) => sum + (o.votesCount || 0),
+            0
+        ) || 1; // чтобы не делить на 0
+
+        results.options.forEach(option => {
+            const optionId = option.id;
+            const votes = option.votesCount || 0;
+            const percent = Math.round((votes / totalVotes) * 100);
+
+            // ищем input по value == id
+            const input = formScope.querySelector(
+                'input[value="' + optionId + '"]'
+            );
+            if (!input) return;
+
+            const wrapper = input.closest('.option-wrapper') || input.closest('label') || input.parentElement;
+            if (!wrapper) return;
+
+            // добавим класс, который чуть "укорачивает" кнопку
+            wrapper.classList.add('option-with-results');
+
+            // если результат уже добавлен, просто обновим текст
+            let resultSpan = wrapper.querySelector('.option-result');
+            if (!resultSpan) {
+                resultSpan = document.createElement('span');
+                resultSpan.className = 'option-result';
+                wrapper.appendChild(resultSpan);
+            }
+
+            resultSpan.textContent = votes + ' (' + percent + '%)';
+        });
+    }
+
     voteBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
@@ -69,46 +107,47 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Собираем poleId из скрытого поля формы (asp-for="Id")
         const poleInput = formScope.querySelector('input[name="Id"], input[id="Id"], input[type="hidden"]');
         const poleId = poleInput ? String(poleInput.value) : '';
 
-        // Собираем выбранные optionsId
-        let optionsId = [];
+        let optionsIds = [];
         const checkedCheckboxes = Array.from(formScope.querySelectorAll('input.option-checkbox:checked'));
         if (checkedCheckboxes.length > 0) {
-            optionsId = checkedCheckboxes.map(i => String(i.value));
+            optionsIds = checkedCheckboxes.map(i => String(i.value));
         } else {
             const checkedRadio = formScope.querySelector('input[type="radio"]:checked');
-            if (checkedRadio) optionsId.push(String(checkedRadio.value));
+            if (checkedRadio) optionsIds.push(String(checkedRadio.value));
         }
-
-        const payload = {
-            poleId: poleId,
-            optionsId: optionsId
-        };
+        
+        
+        console.log(`/api/poles/${poleId}/vote`);
 
         fetch(`/api/poles/${poleId}/vote`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(optionsIds)
         })
-        .then(r => {
-            if (!r.ok) throw new Error("Ошибка голосования");
-        })
-        
-        
-        fetch(`/api/poles/${poleId}/results`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        })
-        .then(r => {
-            if (!r.ok) throw new Error("Ошибка получения результатов");
-            return r.json();
-        })
-        
+            .then(r => {
+                if (!r.ok) throw new Error("Ошибка голосования");
+                return fetch(`/api/poles/${poleId}/results`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+            })
+            .then(r => {
+                if (!r.ok) throw new Error("Ошибка получения результатов");
+                return r.json();
+            })
+            .then(results => {
+                applyResultsToOptions(results, formScope);
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('Произошла ошибка при голосовании');
+            });
+
         const cancel = createCancelButton(voteBtn);
         voteBtn.replaceWith(cancel);
         showToast('Голос принят');
     });
-})
+});
