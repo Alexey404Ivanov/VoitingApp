@@ -6,7 +6,7 @@ public class PolesRepository : IPolesRepository
 {
     private readonly Dictionary<Guid, PoleEntity> _entities = new();
 
-    public PoleEntity Insert(PoleEntity pole)
+    public PoleEntity Create(PoleEntity pole)
     {
         if (pole.Id != Guid.Empty)
             throw new InvalidOperationException();
@@ -27,8 +27,8 @@ public class PolesRepository : IPolesRepository
         var pole = _entities[poleId];
         foreach (var option in pole.Options.Where(option => optionsIds.Contains(option.Id)))
         {
-            if (!isVoteReset) option.VotesCount++;
-            else option.VotesCount--;
+            // if (!isVoteReset) option.VotesCount++;
+            // else option.VotesCount--;
         }
     }
 
@@ -53,6 +53,6 @@ public class PolesRepository : IPolesRepository
     
     private static PoleEntity Clone(Guid id, PoleEntity pole)
     {
-        return new PoleEntity(id, pole.Question, pole.CreatedAt, pole.Options, pole.IsMultipleChoice);
+        return new PoleEntity(id, pole.Title, pole.CreatedAt, pole.Options, pole.IsMultipleChoice);
     }
 }

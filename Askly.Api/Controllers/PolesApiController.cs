@@ -39,7 +39,7 @@ public class PolesApiController : ControllerBase
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
         var poleEntity = _mapper.Map<PoleEntity>(poleDto);
-        var insertedPole = _repo.Insert(poleEntity);
+        var insertedPole = _repo.Create(poleEntity);
         return CreatedAtRoute(nameof(GetPoleById), new{poleId=insertedPole.Id}, insertedPole.Id);
     }
     

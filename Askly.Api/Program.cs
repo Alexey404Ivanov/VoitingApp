@@ -1,10 +1,16 @@
 ﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using VoitingApp.Domain;
 using VoitingApp.Infrastructure;
 using VoitingApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Services.AddLogging(logging =>
 {
