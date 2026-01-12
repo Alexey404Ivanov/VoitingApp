@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using VoitingApp.Domain;
+using Askly.Domain.Entities;
 
-namespace VoitingApp.Infrastructure.DbConfigurations;
+namespace Askly.Infrastructure.DbConfigurations;
 
 public class OptionConfiguration : IEntityTypeConfiguration<OptionEntity>
 {

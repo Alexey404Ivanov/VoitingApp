@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using VoitingApp.Domain;
+using Askly.Domain.Entities;
 
-namespace VoitingApp.Infrastructure.DbConfigurations;
+namespace Askly.Infrastructure.DbConfigurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
 {
@@ -19,7 +19,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
             .IsRequired();
         
         builder
-            .HasMany(u => u.CreatedPoles)
+            .HasMany(u => u.CreatedPolls)
             .WithOne(p => p.User)
             .HasForeignKey(p => p.UserId);
         

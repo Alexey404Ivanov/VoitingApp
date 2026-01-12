@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "VoitingApp.Api": {
+    "Askly.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

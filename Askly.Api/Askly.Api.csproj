@@ -5,7 +5,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>VoitingApp</RootNamespace>
+        <RootNamespace>Askly.Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,6 +26,27 @@
       <_ContentIncludedByDefault Remove="wwwroot\images\logo.png" />
       <_ContentIncludedByDefault Remove="wwwroot\js\details.js" />
       <_ContentIncludedByDefault Remove="wwwroot\js\index.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Askly.Application\Askly.Application.csproj" />
+      <ProjectReference Include="..\Askly.Infrastructure\Askly.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\css\details.css" />
+      <None Include="wwwroot\css\styles.css" />
+      <None Include="wwwroot\images\logo.png" />
+      <None Include="wwwroot\js\details.js" />
+      <None Include="wwwroot\js\index.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Polls\Details.cshtml" />
+      <AdditionalFiles Include="Views\Polls\Index.cshtml" />
+      <AdditionalFiles Include="Views\Shared\_Layout.cshtml" />
+      <AdditionalFiles Include="Views\_ViewImports.cshtml" />
+      <AdditionalFiles Include="Views\_ViewStart.cshtml" />
     </ItemGroup>
 
 </Project>

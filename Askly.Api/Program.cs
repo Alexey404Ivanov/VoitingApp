@@ -1,16 +1,16 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-using VoitingApp.Domain;
-using VoitingApp.Infrastructure;
-using VoitingApp.Models;
+﻿using Askly.Application.Interfaces.Repositories;
+using Askly.Application.Profiles;
+using Askly.Domain.Entities;
+using Askly.Infrastructure.Repositories;
+using Askly.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-});
+// builder.Services.AddDbContext<AppDbContext>(options =>
+// {
+//     options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+// });
 
 builder.Services.AddLogging(logging =>
 {
@@ -29,22 +29,15 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<IPolesRepository, PolesRepository>();
+builder.Services.AddSingleton<IPollService, PollService>();
 
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.CreateMap<PoleEntity, PoleDto>();
-    cfg.CreateMap<CreatePoleDto, PoleEntity>();
-    cfg.CreateMap<CreateOptionDto, OptionEntity>();
-    cfg.CreateMap<OptionEntity, OptionDto>();
-    cfg.CreateMap<OptionEntity, OptionResultsDto>();
-    cfg.CreateMap<PoleEntity, PoleResultsDto>();
-}, Array.Empty<Assembly>());
+builder.Services.AddSingleton<IPollsRepository, PollsRepository>();
 
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 var app = builder.Build();
 
-app.MapGet("/", () => Results.Redirect("/poles"));
+app.MapGet("/", () => Results.Redirect("/polls"));
 
 if (app.Environment.IsDevelopment())
 {
@@ -52,7 +45,6 @@ if (app.Environment.IsDevelopment())
     
     app.UseSwaggerUI();
 }
-
 app.UseRouting();
 
 app.Use(async (context, next) =>
