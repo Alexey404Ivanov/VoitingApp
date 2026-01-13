@@ -8,6 +8,8 @@ public interface IPollService
     Task<List<PollDto>> GetAll();
     Task DeletePoll(Guid id);
     Task Vote(Guid id, List<Guid> optionsIds);
+    Task VoteAsync(Guid id, List<Guid> optionsIds, Guid anonUserId);
+    Task<List<OptionResultsDto>> GetResults(Guid pollId);
     // void DeleteVote(Guid pollId, List<Guid> optionsIds);
     // PollResultsDto ShowResults(Guid pollId);
 }

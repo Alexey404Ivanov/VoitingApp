@@ -23,12 +23,12 @@ public class PollsRepository : IPollsRepository
         return polls;
     }
     
-    public async Task<PollEntity?> GetById(Guid id)
+    public async Task<PollEntity?> GetById(Guid pollId)
     {
         var poll = await _context.Poles
             .AsNoTracking()
             .Include(p => p.Options)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == pollId);
 
         return poll;
     }
@@ -41,11 +41,11 @@ public class PollsRepository : IPollsRepository
         return poll.Id;
     }
 
-    public async Task<bool> Delete(Guid id)
+    public async Task<bool> Delete(Guid pollId)
     {
         var poll = await _context.Poles
             .Include(p => p.Options)    
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == pollId);
         
         if (poll == null) return false;
         
@@ -68,5 +68,47 @@ public class PollsRepository : IPollsRepository
         
         await _context.SaveChangesAsync();
         return true;
+    }
+    
+    public async Task VoteAsync(
+        Guid pollId,
+        List<Guid> optionIds,
+        Guid anonUserId)
+    {
+        // удаляем старые голоса пользователя
+        await _context.Votes
+            .Where(v => v.PollId == pollId && v.AnonUserId == anonUserId)
+            .ExecuteDeleteAsync();
+    
+        // добавляем новые
+        var votes = optionIds.Select(optionId => new VoteEntity
+        {
+            PollId = pollId,
+            OptionId = optionId,
+            AnonUserId = anonUserId
+        });
+    
+        await _context.Votes.AddRangeAsync(votes);
+        await _context.SaveChangesAsync();
+    }
+
+    
+    public async Task<List<Guid>> GetUserVotesAsync(
+        Guid pollId,
+        Guid anonUserId)
+    {
+        return await _context.Votes
+            .Where(v => v.PollId == pollId && v.AnonUserId == anonUserId)
+            .Select(v => v.OptionId)
+            .ToListAsync();
+    }
+
+    
+    public async Task<List<OptionEntity>> GetResults(Guid pollId)
+    {
+        return await _context.Options
+            .AsNoTracking()
+            .Where(o => o.PollId == pollId)
+            .ToListAsync();;
     }
 }

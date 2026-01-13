@@ -23,9 +23,9 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         //     .WithOne(p => p.User)
         //     .HasForeignKey(p => p.UserId);
         
-        builder
-            .HasMany(u => u.Votes)
-            .WithOne(v => v.User)
-            .HasForeignKey(v => v.UserId);
+        // builder
+        //     .HasMany(u => u.Votes)
+        //     .WithOne(v => v.User)
+        //     .HasForeignKey(v => v.UserId);
     }
 }

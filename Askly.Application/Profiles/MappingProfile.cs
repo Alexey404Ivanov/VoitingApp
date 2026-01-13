@@ -12,6 +12,6 @@ public class MappingProfile : Profile
         CreateMap<CreateOptionDto, OptionEntity>();
         CreateMap<OptionEntity, OptionDto>();
         CreateMap<OptionEntity, OptionResultsDto>();
-        CreateMap<PollEntity, PollResultsDto>();
+        // CreateMap<PollEntity, PollResultsDto>();
     }
 }

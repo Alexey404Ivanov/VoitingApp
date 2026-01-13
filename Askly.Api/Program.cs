@@ -1,4 +1,5 @@
-﻿using Askly.Application.Interfaces.Repositories;
+﻿using Askly.Api.Middleware;
+using Askly.Application.Interfaces.Repositories;
 using Askly.Application.Profiles;
 using Askly.Domain.Entities;
 using Askly.Infrastructure.Repositories;
@@ -56,6 +57,7 @@ app.Use(async (context, next) =>
     Console.WriteLine($"Outgoing: {context.Response.StatusCode}");
 });
 
+app.UseMiddleware<AnonymousUserMiddleware>();
 
 app.MapControllers();                
 

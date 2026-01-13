@@ -9,14 +9,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<PollEntity> Poles { get; set; }
     // public DbSet<UserEntity> Users { get; set; }
-    // public DbSet<VoteEntity> Votes { get; set; }
+    public DbSet<VoteEntity> Votes { get; set; }
     public DbSet<OptionEntity> Options { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new PollConfiguration());
         // modelBuilder.ApplyConfiguration(new UserConfiguration());
-        // modelBuilder.ApplyConfiguration(new VoteConfiguration());
+        modelBuilder.ApplyConfiguration(new VoteConfiguration());
         modelBuilder.ApplyConfiguration(new OptionConfiguration());
         
         base.OnModelCreating(modelBuilder);

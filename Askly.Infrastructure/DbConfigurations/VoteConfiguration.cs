@@ -8,6 +8,8 @@ public class VoteConfiguration : IEntityTypeConfiguration<VoteEntity>
 {
     public void Configure(EntityTypeBuilder<VoteEntity> builder)
     {
-        builder.HasKey(v => v.Id);
+        builder.HasKey(v => new { v.PollId, v.OptionId, v.AnonUserId });
+
+        builder.HasIndex(v => new { v.PollId, v.AnonUserId });
     }
 }

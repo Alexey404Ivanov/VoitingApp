@@ -58,20 +58,35 @@ public class PollsApiController : ControllerBase
     }
     
     
+    // [HttpPost("{pollId:guid}/vote")]
+    // [Produces("application/json")]
+    // public async Task<ActionResult> Vote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
+    // {
+    //     try
+    //     {
+    //         await _service.Vote(pollId, optionsIds);
+    //         return NoContent();
+    //     }
+    //     catch (PollNotFoundException e)
+    //     {
+    //         return NotFound(e.Message);
+    //     }
+    // }
+    
     [HttpPost("{pollId:guid}/vote")]
     [Produces("application/json")]
-    public async Task<ActionResult> Vote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
+    public async Task<IActionResult> Vote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
     {
-        try
-        {
-            await _service.Vote(pollId, optionsIds);
-            return NoContent();
-        }
-        catch (PollNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
+        var anonUserId = (Guid)HttpContext.Items["AnonUserId"]!;
+
+        await _service.VoteAsync(
+            pollId,
+            optionsIds,
+            anonUserId);
+
+        return Ok();
     }
+
     
     [HttpDelete("{pollId:guid}")]
     public async Task<ActionResult> DeletePoll([FromRoute] Guid pollId)
@@ -104,18 +119,18 @@ public class PollsApiController : ControllerBase
     
     
 
-    // [HttpGet("{pollId:guid}/results")]
-    // [Produces("application/json")]
-    // public ActionResult<PollResultsDto> ShowResults([FromRoute] Guid pollId)
-    // {
-    //     try
-    //     {
-    //         var resultsDto = _service.ShowResults(pollId);
-    //         return Ok(resultsDto);
-    //     }
-    //     catch (PollNotFoundException e)
-    //     {
-    //         return NotFound(e.Message);
-    //     }
-    // }
+    [HttpGet("{pollId:guid}/results")]
+    [Produces("application/json")]
+    public async Task<ActionResult<List<OptionResultsDto>>> ShowResults([FromRoute] Guid pollId)
+    {
+        try
+        {
+            var resultsDto = await _service.GetResults(pollId);
+            return Ok(resultsDto);
+        }
+        catch (PollNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

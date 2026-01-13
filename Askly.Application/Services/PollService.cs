@@ -55,6 +55,16 @@ public class PollService : IPollService
             throw new PollNotFoundException(id);
     }
     
+    public async Task VoteAsync(Guid id, List<Guid> optionsIds, Guid anonUserId)
+    {
+        await _repo.VoteAsync(id, optionsIds, anonUserId);
+    }
+
+    public async Task<List<OptionResultsDto>> GetResults(Guid pollId)
+    {
+        var entities = await _repo.GetResults(pollId);
+        return _mapper.Map<List<OptionResultsDto>>(entities);
+    }
     // public void DeleteVote(Guid pollId, List<Guid> optionsIds)
     // {
     //     if (_repo.FindById(pollId) == null)
