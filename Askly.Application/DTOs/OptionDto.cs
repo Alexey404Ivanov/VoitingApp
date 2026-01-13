@@ -2,6 +2,6 @@
 
 public class OptionDto
 {
-    public Guid Id { get; set; }
-    public string Text { get; set; }
+    public Guid Id { get; init; }
+    public string Text { get; init; }
 }

@@ -3,11 +3,11 @@ namespace Askly.Application.Services;
 
 public interface IPollService
 {
-    PollDto GetById(Guid pollId);
-    Guid Create(CreatePollDto pollDto);
-    IEnumerable<PollDto> GetAll();
-    void DeletePoll(Guid pollId);
-    void DeleteVote(Guid pollId, List<Guid> optionsIds);
-    void Vote(Guid pollId, List<Guid> optionsIds);
-    PollResultsDto ShowResults(Guid pollId);
+    Task<PollDto> GetById(Guid pollId);
+    Task<Guid> Create(CreatePollDto pollDto);
+    Task<List<PollDto>> GetAll();
+    Task DeletePoll(Guid id);
+    // void DeleteVote(Guid pollId, List<Guid> optionsIds);
+    // void Vote(Guid pollId, List<Guid> optionsIds);
+    // PollResultsDto ShowResults(Guid pollId);
 }

@@ -17,48 +17,54 @@ public class PollService : IPollService
         _mapper = mapper;
     }
     
-    public PollDto GetById(Guid pollId)
+    public async Task<PollDto> GetById(Guid pollId)
     {
-        var poll = _repo.FindById(pollId);
+        var poll = await _repo.GetById(pollId);
         return poll == null ? throw new PollNotFoundException(pollId) : _mapper.Map<PollDto>(poll);
     }
     
-    public Guid Create(CreatePollDto pollDto)
+    public async Task<Guid> Create(CreatePollDto pollDto)
     {
-        var entity = _mapper.Map<PollEntity>(pollDto);
-        return _repo.Create(entity).Id;
+        var poll = new PollEntity(pollDto.Title, pollDto.IsMultipleChoice);
+        foreach (var optionDto in pollDto.Options)
+            poll.AddOption(optionDto.Text);
+        
+        return await _repo.Create(poll);
     }
     
-    public IEnumerable<PollDto> GetAll()
+    public async Task<List<PollDto>> GetAll()
     {
-        var polls = _repo.GetAll();
-        return _mapper.Map<IEnumerable<PollDto>>(polls);
+        var polls = await _repo.GetAll();
+        return _mapper.Map<List<PollDto>>(polls);
     }
     
-    public void DeletePoll(Guid pollId)
+    public async Task DeletePoll(Guid id)
     {
-        if (_repo.FindById(pollId) == null)
-            throw new PollNotFoundException(pollId);
-        _repo.Delete(pollId);
+        // var poll = await _repo.GetIfExists(id);
+        // if (poll == null)
+        //     throw new PollNotFoundException(id);
+        var isDeleted = await _repo.Delete(id);
+        if (!isDeleted)
+            throw new PollNotFoundException(id);
     }
     
-    public void DeleteVote(Guid pollId, List<Guid> optionsIds)
-    {
-        if (_repo.FindById(pollId) == null)
-            throw new PollNotFoundException(pollId);
-        _repo.UpdateVotes(pollId, optionsIds, true);
-    }
-    
-    public void Vote(Guid pollId, List<Guid> optionsIds)
-    {
-        if (_repo.FindById(pollId) == null)
-            throw new PollNotFoundException(pollId);
-        _repo.UpdateVotes(pollId, optionsIds, false);
-    }
-    
-    public PollResultsDto ShowResults(Guid pollId)
-    {
-        var poll = _repo.FindById(pollId);
-        return poll == null ? throw new PollNotFoundException(pollId) : _mapper.Map<PollResultsDto>(poll);
-    }
+    // public void DeleteVote(Guid pollId, List<Guid> optionsIds)
+    // {
+    //     if (_repo.FindById(pollId) == null)
+    //         throw new PollNotFoundException(pollId);
+    //     _repo.UpdateVotes(pollId, optionsIds, true);
+    // }
+    //
+    // public void Vote(Guid pollId, List<Guid> optionsIds)
+    // {
+    //     if (_repo.FindById(pollId) == null)
+    //         throw new PollNotFoundException(pollId);
+    //     _repo.UpdateVotes(pollId, optionsIds, false);
+    // }
+    //
+    // public PollResultsDto ShowResults(Guid pollId)
+    // {
+    //     var poll = _repo.FindById(pollId);
+    //     return poll == null ? throw new PollNotFoundException(pollId) : _mapper.Map<PollResultsDto>(poll);
+    // }
 }

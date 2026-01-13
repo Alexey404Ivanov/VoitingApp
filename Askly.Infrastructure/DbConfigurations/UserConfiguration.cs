@@ -18,10 +18,10 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
             .Property(u => u.Password)
             .IsRequired();
         
-        builder
-            .HasMany(u => u.CreatedPolls)
-            .WithOne(p => p.User)
-            .HasForeignKey(p => p.UserId);
+        // builder
+        //     .HasMany(u => u.CreatedPolls)
+        //     .WithOne(p => p.User)
+        //     .HasForeignKey(p => p.UserId);
         
         builder
             .HasMany(u => u.Votes)

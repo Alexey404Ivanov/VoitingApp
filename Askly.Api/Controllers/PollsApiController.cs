@@ -11,18 +11,18 @@ public class PollsApiController : ControllerBase
 {
     private readonly IPollService _service;
 
-    public PollsApiController(IPollsRepository repo, IPollService service)
+    public PollsApiController(IPollService service)
     {
         _service = service;
     }
     
     [HttpGet("{pollId:guid}", Name = nameof(GetById))]
     [Produces("application/json")]
-    public ActionResult<PollDto> GetById([FromRoute] Guid pollId)
+    public async Task<ActionResult<PollDto>> GetById([FromRoute] Guid pollId)
     {
         try
         {
-            var poll = _service.GetById(pollId);
+            var poll = await _service.GetById(pollId);
             return Ok(poll);
         }
         catch (PollNotFoundException e)
@@ -39,46 +39,46 @@ public class PollsApiController : ControllerBase
     
     [HttpGet]
     [Produces("application/json")]
-    public ActionResult<IEnumerable<PollDto>> GetAll()
+    public async Task<ActionResult<List<PollDto>>> GetAll()
     {
-        var polls = _service.GetAll();
+        var polls = await _service.GetAll();
         return Ok(polls);
     }
     
     [HttpPost]
     [Produces("application/json", "application/xml")]
-    public ActionResult<Guid> Create([FromBody] CreatePollDto? pollDto)
+    public async Task<ActionResult<Guid>> Create([FromBody] CreatePollDto? pollDto)
     {
         if (pollDto == null)
             return BadRequest();
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        var createdPollId = _service.Create(pollDto);
+        var createdPollId = await _service.Create(pollDto);
         return Ok(createdPollId);
     }
     
     
-    [HttpPost("{pollId:guid}/vote")]
-    [Produces("application/json")]
-    public ActionResult Vote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
-    {
-        try
-        {
-            _service.Vote(pollId, optionsIds);
-            return NoContent();
-        }
-        catch (PollNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-    }
+    // [HttpPost("{pollId:guid}/vote")]
+    // [Produces("application/json")]
+    // public ActionResult Vote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
+    // {
+    //     try
+    //     {
+    //         _service.Vote(pollId, optionsIds);
+    //         return NoContent();
+    //     }
+    //     catch (PollNotFoundException e)
+    //     {
+    //         return NotFound(e.Message);
+    //     }
+    // }
     
     [HttpDelete("{pollId:guid}")]
-    public ActionResult DeletePoll([FromRoute] Guid pollId)
+    public async Task<ActionResult> DeletePoll([FromRoute] Guid pollId)
     {
         try
         {
-            _service.DeletePoll(pollId);
+            await _service.DeletePoll(pollId);
             return NoContent();
         }
         catch (PollNotFoundException e)
@@ -87,35 +87,35 @@ public class PollsApiController : ControllerBase
         }
     }
     
-    [HttpDelete("{pollId:guid}/vote")]
-    [Produces("application/json")]
-    public ActionResult DeleteVote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
-    {
-        try
-        {
-            _service.DeleteVote(pollId, optionsIds);
-            return NoContent();
-        }
-        catch (PollNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-    }
+    // [HttpDelete("{pollId:guid}/vote")]
+    // [Produces("application/json")]
+    // public ActionResult DeleteVote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
+    // {
+    //     try
+    //     {
+    //         _service.DeleteVote(pollId, optionsIds);
+    //         return NoContent();
+    //     }
+    //     catch (PollNotFoundException e)
+    //     {
+    //         return NotFound(e.Message);
+    //     }
+    // }
     
     
 
-    [HttpGet("{pollId:guid}/results")]
-    [Produces("application/json")]
-    public ActionResult<PollResultsDto> ShowResults([FromRoute] Guid pollId)
-    {
-        try
-        {
-            var resultsDto = _service.ShowResults(pollId);
-            return Ok(resultsDto);
-        }
-        catch (PollNotFoundException e)
-        {
-            return NotFound(e.Message);
-        }
-    }
+    // [HttpGet("{pollId:guid}/results")]
+    // [Produces("application/json")]
+    // public ActionResult<PollResultsDto> ShowResults([FromRoute] Guid pollId)
+    // {
+    //     try
+    //     {
+    //         var resultsDto = _service.ShowResults(pollId);
+    //         return Ok(resultsDto);
+    //     }
+    //     catch (PollNotFoundException e)
+    //     {
+    //         return NotFound(e.Message);
+    //     }
+    // }
 }

@@ -2,8 +2,8 @@
 
 public class PollDto
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public List<OptionDto> Options { get; set; }
-    public bool IsMultipleChoice { get; set; }
+    public Guid Id { get; init; }
+    public string Title { get; init; }
+    public List<OptionDto> Options { get; init; }
+    public bool IsMultipleChoice { get; init; }
 }

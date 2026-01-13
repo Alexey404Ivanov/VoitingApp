@@ -2,25 +2,36 @@
 
 public class PollEntity
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public Guid UserId { get; set; }
-    public UserEntity User { get; set; }
-    public List<OptionEntity> Options { get; set; }
-    public bool IsMultipleChoice { get; set; }
+    public Guid Id { get; private set; }
+    public string Title { get; private set; }
+    public bool IsMultipleChoice { get; private set; }
 
-    public PollEntity()
-    {
-        Id = Guid.Empty;
-    }
+    // public DateTime CreatedAt { get; set; }
+
+    // public Guid UserId { get; set; }
+
+    // public UserEntity User { get; set; }
+    private readonly List<OptionEntity> _options = [];
+    public IReadOnlyCollection<OptionEntity> Options => _options;
+
+    // public PollEntity()
+    // {
+    //     Id = Guid.Empty;
+    // }
     
-    public PollEntity(Guid id, string title, DateTime createdAt, List<OptionEntity> options, bool isMultipleChoice)
+    public PollEntity(string title, bool isMultipleChoice)
     {
-        Id = id;
+        Id = Guid.NewGuid();
         Title = title;
-        CreatedAt = createdAt;
-        Options = options;
         IsMultipleChoice = isMultipleChoice;
+    }
+
+    public void AddOption(OptionEntity option)
+    {
+        _options.Add(option);
+    }
+    public void AddOption(string text)
+    {
+        _options.Add(new OptionEntity(text));
     }
 }

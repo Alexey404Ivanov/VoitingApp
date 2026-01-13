@@ -13,9 +13,9 @@ public class OptionConfiguration : IEntityTypeConfiguration<OptionEntity>
         builder.Property(o => o.Text)
             .IsRequired();
         
-        builder
-            .HasMany(o => o.Votes)
-            .WithOne(v => v.Option)
-            .HasForeignKey(v => v.OptionId);
+        // builder
+        //     .HasMany(o => o.Votes)
+        //     .WithOne(v => v.Option)
+        //     .HasForeignKey(v => v.OptionId);
     }
 }

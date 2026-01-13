@@ -1,13 +1,12 @@
-﻿using Askly.Domain;
-using Askly.Domain.Entities;
+﻿using Askly.Domain.Entities;
 
 namespace Askly.Application.Interfaces.Repositories;
 
 public interface IPollsRepository
 {
-    PollEntity Create(PollEntity poll);
-    PollEntity? FindById(Guid pollId);
-    IEnumerable<PollEntity> GetAll();
-    void Delete(Guid pollId);
-    void UpdateVotes(Guid pollId, List<Guid> optionsIds, bool isVoteReset);
+    Task<List<PollEntity>> GetAll();
+    Task<PollEntity?> GetById(Guid id);
+    // Task<PollEntity?> GetIfExists(Guid id);
+    Task<Guid> Create(PollEntity poll);
+    Task<bool> Delete(Guid id);
 }

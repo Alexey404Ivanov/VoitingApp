@@ -2,25 +2,22 @@
 
 public class OptionEntity
 {
-    public Guid Id { get; set; }
-    public string Text { get; set; }
-    public Guid PollId { get; set; }
-    public PollEntity Poll { get; set; }
-    public List<VoteEntity> Votes { get; set; }
-    public int VotesCount => Votes.Count;
+    public Guid Id { get; private set; }
+    public string Text { get; private set; }
     
-    public OptionEntity()
-    {
-        Id = Guid.Empty;
-    }
+    public Guid PollId { get; private set; }
+    public PollEntity Poll { get; private set; }
     
-    public OptionEntity(Guid id, string text, Guid pollId, PollEntity poll, List<VoteEntity> votes)
+    // public List<VoteEntity> Votes { get; set; }
+    // public int VotesCount => Votes.Count;
+    
+    private OptionEntity() { }
+    
+    internal OptionEntity(string text)
     {
-        Id = id;
+        Id = Guid.NewGuid();
         Text = text;
-        PollId = pollId;
-        Poll = poll;
-        Votes = votes;
+        // Votes = votes;
         // VotesCount = votesCount;
     }
 }

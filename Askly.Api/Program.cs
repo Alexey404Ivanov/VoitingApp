@@ -3,14 +3,16 @@ using Askly.Application.Profiles;
 using Askly.Domain.Entities;
 using Askly.Infrastructure.Repositories;
 using Askly.Application.Services;
+using Askly.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// builder.Services.AddDbContext<AppDbContext>(options =>
-// {
-//     options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-// });
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Services.AddLogging(logging =>
 {
@@ -29,9 +31,9 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<IPollService, PollService>();
+builder.Services.AddScoped<IPollService, PollService>();
 
-builder.Services.AddSingleton<IPollsRepository, InMemoryPollsRepository>();
+builder.Services.AddScoped<IPollsRepository, PollsRepository>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
