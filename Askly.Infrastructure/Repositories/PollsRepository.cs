@@ -54,4 +54,19 @@ public class PollsRepository : IPollsRepository
         
         return true;
     }
+
+    public async Task<bool> Vote(Guid pollId, List<Guid> optionsIds)
+    {
+        await _context.Options
+            .Where(o => o.PollId == pollId)
+            .Where(o => optionsIds.Contains(o.Id))
+            .ExecuteUpdateAsync(s =>
+                s.SetProperty(
+                    o => o.VotesCount,
+                    o => o.VotesCount + 1
+                ));
+        
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

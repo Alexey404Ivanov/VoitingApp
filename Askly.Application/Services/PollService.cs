@@ -43,8 +43,15 @@ public class PollService : IPollService
         // var poll = await _repo.GetIfExists(id);
         // if (poll == null)
         //     throw new PollNotFoundException(id);
-        var isDeleted = await _repo.Delete(id);
-        if (!isDeleted)
+        var isDeletedSucceed = await _repo.Delete(id);
+        if (!isDeletedSucceed)
+            throw new PollNotFoundException(id);
+    }
+    
+    public async Task Vote(Guid id, List<Guid> optionsIds)
+    {
+        var isVoteSucceed = await _repo.Vote(id, optionsIds);
+        if (!isVoteSucceed)
             throw new PollNotFoundException(id);
     }
     
@@ -55,12 +62,7 @@ public class PollService : IPollService
     //     _repo.UpdateVotes(pollId, optionsIds, true);
     // }
     //
-    // public void Vote(Guid pollId, List<Guid> optionsIds)
-    // {
-    //     if (_repo.FindById(pollId) == null)
-    //         throw new PollNotFoundException(pollId);
-    //     _repo.UpdateVotes(pollId, optionsIds, false);
-    // }
+    
     //
     // public PollResultsDto ShowResults(Guid pollId)
     // {

@@ -9,7 +9,7 @@ public class OptionEntity
     public PollEntity Poll { get; private set; }
     
     // public List<VoteEntity> Votes { get; set; }
-    // public int VotesCount => Votes.Count;
+    public int VotesCount = 0;
     
     private OptionEntity() { }
     

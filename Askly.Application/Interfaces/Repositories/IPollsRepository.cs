@@ -6,7 +6,7 @@ public interface IPollsRepository
 {
     Task<List<PollEntity>> GetAll();
     Task<PollEntity?> GetById(Guid id);
-    // Task<PollEntity?> GetIfExists(Guid id);
     Task<Guid> Create(PollEntity poll);
     Task<bool> Delete(Guid id);
+    Task<bool> Vote(Guid pollId, List<Guid> optionsIds);
 }

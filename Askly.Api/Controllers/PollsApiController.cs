@@ -58,20 +58,20 @@ public class PollsApiController : ControllerBase
     }
     
     
-    // [HttpPost("{pollId:guid}/vote")]
-    // [Produces("application/json")]
-    // public ActionResult Vote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
-    // {
-    //     try
-    //     {
-    //         _service.Vote(pollId, optionsIds);
-    //         return NoContent();
-    //     }
-    //     catch (PollNotFoundException e)
-    //     {
-    //         return NotFound(e.Message);
-    //     }
-    // }
+    [HttpPost("{pollId:guid}/vote")]
+    [Produces("application/json")]
+    public async Task<ActionResult> Vote([FromRoute] Guid pollId, [FromBody] List<Guid> optionsIds)
+    {
+        try
+        {
+            await _service.Vote(pollId, optionsIds);
+            return NoContent();
+        }
+        catch (PollNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
     
     [HttpDelete("{pollId:guid}")]
     public async Task<ActionResult> DeletePoll([FromRoute] Guid pollId)

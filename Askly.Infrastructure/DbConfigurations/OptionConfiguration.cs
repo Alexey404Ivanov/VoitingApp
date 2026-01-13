@@ -13,6 +13,8 @@ public class OptionConfiguration : IEntityTypeConfiguration<OptionEntity>
         builder.Property(o => o.Text)
             .IsRequired();
         
+        builder.Property(o => o.VotesCount)
+            .IsRequired();
         // builder
         //     .HasMany(o => o.Votes)
         //     .WithOne(v => v.Option)
