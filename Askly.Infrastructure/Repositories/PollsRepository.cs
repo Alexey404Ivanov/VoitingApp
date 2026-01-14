@@ -70,10 +70,7 @@ public class PollsRepository : IPollsRepository
         return true;
     }
     
-    public async Task VoteAsync(
-        Guid pollId,
-        List<Guid> optionIds,
-        Guid anonUserId)
+    public async Task VoteAsync(Guid pollId, List<Guid> optionIds, Guid anonUserId)
     {
         // удаляем старые голоса пользователя
         await _context.Votes
@@ -89,6 +86,16 @@ public class PollsRepository : IPollsRepository
         });
     
         await _context.Votes.AddRangeAsync(votes);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteVote(Guid pollId, List<Guid> optionIds, Guid anonUserId)
+    {
+        var votesToDelete = await _context.Votes
+            .Where(v => v.PollId == pollId && v.AnonUserId == anonUserId && optionIds.Contains(v.OptionId))
+            .ToListAsync();
+        
+        _context.Votes.RemoveRange(votesToDelete);
         await _context.SaveChangesAsync();
     }
 

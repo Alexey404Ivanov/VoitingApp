@@ -60,6 +60,11 @@ public class PollService : IPollService
         await _repo.VoteAsync(id, optionsIds, anonUserId);
     }
 
+    public async Task DeleteVote(Guid pollId, List<Guid> optionsIds, Guid anonUserId)
+    {
+        await _repo.DeleteVote(pollId, optionsIds, anonUserId);
+    }
+    
     public async Task<List<OptionResultsDto>> GetResults(Guid pollId)
     {
         var entities = await _repo.GetResults(pollId);
