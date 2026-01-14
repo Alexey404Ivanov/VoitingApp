@@ -11,5 +11,7 @@ public interface IPollsRepository
     Task<bool> Vote(Guid pollId, List<Guid> optionsIds);
     Task VoteAsync(Guid pollId, List<Guid> optionsIds, Guid anonUserId);
     Task DeleteVote(Guid pollId, List<Guid> optionsIds, Guid anonUserId);
-    Task<List<OptionEntity>> GetResults(Guid pollId);
+    Task<List<Guid>> GetUserVotesAsync(Guid pollId, Guid anonUserId);
+    Task<int> GetVotedUsersCount(Guid pollId);
+    Task<List<Tuple<Guid, int>>> GetResults(Guid pollId);
 }

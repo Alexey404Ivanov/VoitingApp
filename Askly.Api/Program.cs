@@ -40,6 +40,12 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 var app = builder.Build();
 
+var per = 5.0 / 12 * 100;
+
+per = Math.Round(per, 1);
+
+Console.WriteLine($"{per}%");
+
 app.MapGet("/", () => Results.Redirect("/polls"));
 
 if (app.Environment.IsDevelopment())

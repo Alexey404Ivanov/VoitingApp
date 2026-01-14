@@ -65,10 +65,34 @@ public class PollService : IPollService
         await _repo.DeleteVote(pollId, optionsIds, anonUserId);
     }
     
-    public async Task<List<OptionResultsDto>> GetResults(Guid pollId)
+    public async Task<List<VoteResultsDto>> GetResults(Guid pollId)
     {
-        var entities = await _repo.GetResults(pollId);
-        return _mapper.Map<List<OptionResultsDto>>(entities);
+        var votedOptions = await _repo.GetResults(pollId);
+        var votedUsersCount = await _repo.GetVotedUsersCount(pollId);
+        var allOptionGuids = (await _repo.GetById(pollId))!.Options.Select(x => x.Id).ToList();
+        var votedOptionGuids = votedOptions.Select(t => t.Item1).ToHashSet();
+        var results = new List<VoteResultsDto>();
+        foreach (var optionGuid in allOptionGuids)
+        {
+            if (!votedOptionGuids.Contains(optionGuid))
+                results.Add(new VoteResultsDto
+                {
+                    OptionId = optionGuid,
+                    VotesCount = 0,
+                    Ratio = 0
+                });
+            else 
+            {
+                var tuple = votedOptions.First(t => t.Item1 == optionGuid);
+                results.Add(new VoteResultsDto
+                {
+                    OptionId = tuple.Item1,
+                    VotesCount = tuple.Item2,
+                    Ratio = Math.Round((double)tuple.Item2 / votedUsersCount * 100, 1)
+                });
+            }
+        }
+        return results;
     }
     // public void DeleteVote(Guid pollId, List<Guid> optionsIds)
     // {

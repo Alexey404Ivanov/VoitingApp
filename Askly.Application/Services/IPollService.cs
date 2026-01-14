@@ -10,7 +10,7 @@ public interface IPollService
     Task Vote(Guid id, List<Guid> optionsIds);
     Task VoteAsync(Guid id, List<Guid> optionsIds, Guid anonUserId);
     Task DeleteVote(Guid pollId, List<Guid> optionsIds, Guid anonUserId);
-    Task<List<OptionResultsDto>> GetResults(Guid pollId);
+    Task<List<VoteResultsDto>> GetResults(Guid pollId);
     // void DeleteVote(Guid pollId, List<Guid> optionsIds);
     // PollResultsDto ShowResults(Guid pollId);
 }

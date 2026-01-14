@@ -122,7 +122,7 @@ public class PollsApiController : ControllerBase
 
     [HttpGet("{pollId:guid}/results")]
     [Produces("application/json")]
-    public async Task<ActionResult<List<OptionResultsDto>>> ShowResults([FromRoute] Guid pollId)
+    public async Task<ActionResult<List<VoteResultsDto>>> ShowResults([FromRoute] Guid pollId)
     {
         try
         {

@@ -53,25 +53,31 @@
         });
     }
 
+// javascript
     function applyResultsToOptions(results, formScope) {
-        if (!results || !Array.isArray(results.options)) return;
+        if (!formScope || !Array.isArray(results)) return;
 
-        const totalVotes = results.options.reduce(
-            (sum, o) => sum + (o.votesCount || 0),
-            0
-        );
+        // Строим карту по optionId
+        const votesMap = new Map();
+        results.forEach(o => {
+            const id = String(o.optionId ?? '');
+            if (!id) return;
+            const votes = Number(o.votesCount ?? 0);
+            const ratio = Number(o.ratio ?? 0); // 0..1
+            votesMap.set(id, { votes, ratio });
+        });
 
-        const safeTotal = totalVotes === 0 ? 1 : totalVotes;
-        results.options.forEach(option => {
-            const optionId = option.id;
-            const votes = option.votesCount || 0;
-            const percent = Math.round((votes / safeTotal) * 100);
+        // Проходим по всем input, чтобы отрисовать результаты для каждого варианта
+        const optionInputs = formScope.querySelectorAll('input[type="radio"], input[type="checkbox"]');
 
-            const input = formScope.querySelector('input[value="' + optionId + '"]');
-            if (!input) return;
+        optionInputs.forEach(input => {
+            const optionId = String(input.value);
+            const data = votesMap.get(optionId) || { votes: 0, ratio: 0 };
+            const percent = data.ratio; // один знак после запятой
 
             const wrapper = input.closest('.option-item') || input.parentElement;
             if (!wrapper) return;
+
             wrapper.classList.add('option-with-results');
 
             let resultSpan = wrapper.querySelector('.option-result');
@@ -81,9 +87,10 @@
                 wrapper.appendChild(resultSpan);
             }
 
-            resultSpan.textContent = votes + ' (' + percent + '%)';
+            resultSpan.textContent = data.votes + ' (' + percent + '%)';
         });
     }
+
 
     function createCancelButton(original, selectedIdsAtVote, pollId, formScope) {
         const btn = document.createElement('button');

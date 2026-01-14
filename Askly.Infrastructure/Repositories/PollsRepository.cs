@@ -100,9 +100,7 @@ public class PollsRepository : IPollsRepository
     }
 
     
-    public async Task<List<Guid>> GetUserVotesAsync(
-        Guid pollId,
-        Guid anonUserId)
+    public async Task<List<Guid>> GetUserVotesAsync(Guid pollId, Guid anonUserId)
     {
         return await _context.Votes
             .Where(v => v.PollId == pollId && v.AnonUserId == anonUserId)
@@ -110,12 +108,22 @@ public class PollsRepository : IPollsRepository
             .ToListAsync();
     }
 
-    
-    public async Task<List<OptionEntity>> GetResults(Guid pollId)
+    public async Task<int> GetVotedUsersCount(Guid pollId)
     {
-        return await _context.Options
+        return await _context.Votes
             .AsNoTracking()
-            .Where(o => o.PollId == pollId)
-            .ToListAsync();;
+            .Where(v => v.PollId == pollId)
+            .Select(v => v.AnonUserId)
+            .Distinct()
+            .CountAsync();
+    }
+    public async Task<List<Tuple<Guid, int>>> GetResults(Guid pollId)
+    {
+        return await _context.Votes
+            .AsNoTracking()
+            .Where(v => v.PollId == pollId)
+            .GroupBy(v => v.OptionId)
+            .Select(g => new Tuple<Guid, int>(g.Key, g.Count()))
+            .ToListAsync();
     }
 }
