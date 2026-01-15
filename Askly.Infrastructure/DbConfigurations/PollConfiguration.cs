@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Askly.Domain.Entities;
+using Askly.Domain;
 
 namespace Askly.Infrastructure.DbConfigurations;
 

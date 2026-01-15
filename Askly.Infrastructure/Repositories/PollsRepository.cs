@@ -1,5 +1,5 @@
 ﻿using Askly.Application.Interfaces.Repositories;
-using Askly.Domain.Entities;
+using Askly.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Askly.Infrastructure.Repositories;

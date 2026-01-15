@@ -9,9 +9,9 @@ namespace Askly.Api.Controllers;
 [Route("api/polls")]
 public class PollsApiController : ControllerBase
 {
-    private readonly IPollService _service;
+    private readonly IPollsService _service;
 
-    public PollsApiController(IPollService service)
+    public PollsApiController(IPollsService service)
     {
         _service = service;
     }

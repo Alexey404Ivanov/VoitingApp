@@ -1,9 +1,7 @@
-﻿using System.Net;
-using Askly.Api.Handlers;
+﻿using Askly.Api.Handlers;
 using Askly.Api.Middleware;
 using Askly.Application.Interfaces.Repositories;
 using Askly.Application.Profiles;
-using Askly.Domain.Entities;
 using Askly.Infrastructure.Repositories;
 using Askly.Application.Services;
 using Askly.Infrastructure;
@@ -42,7 +40,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<IPollService, PollService>();
+builder.Services.AddScoped<IPollsService, PollsService>();
 
 builder.Services.AddScoped<IPollsRepository, PollsRepository>();
 

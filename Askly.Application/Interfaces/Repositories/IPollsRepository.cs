@@ -1,4 +1,4 @@
-﻿using Askly.Domain.Entities;
+﻿using Askly.Domain;
 
 namespace Askly.Application.Interfaces.Repositories;
 

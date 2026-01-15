@@ -1,17 +1,17 @@
 ﻿using Askly.Application.Interfaces.Repositories;
 using Askly.Application.DTOs;
-using Askly.Domain.Entities;
+using Askly.Domain;
 using Askly.Application.Exceptions;
 using AutoMapper;
 
 namespace Askly.Application.Services;
 
-public class PollService : IPollService
+public class PollsService : IPollsService
 {
     private readonly IPollsRepository _repo;
     private readonly IMapper _mapper;
     
-    public PollService(IPollsRepository repo, IMapper mapper)
+    public PollsService(IPollsRepository repo, IMapper mapper)
     {
         _repo = repo;
         _mapper = mapper;

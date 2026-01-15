@@ -1,7 +1,7 @@
 ﻿using Askly.Application.DTOs;
 namespace Askly.Application.Services;
 
-public interface IPollService
+public interface IPollsService
 {
     Task<PollDto> GetById(Guid pollId, Guid anonUserId);
     Task<Guid> Create(CreatePollDto pollDto);

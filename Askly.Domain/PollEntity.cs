@@ -1,4 +1,4 @@
-﻿namespace Askly.Domain.Entities;
+﻿namespace Askly.Domain;
 
 public class PollEntity
 {

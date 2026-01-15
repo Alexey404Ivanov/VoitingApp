@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Askly.Domain;
-using Askly.Domain.Entities;
 using Askly.Infrastructure.DbConfigurations;
 
 namespace Askly.Infrastructure;

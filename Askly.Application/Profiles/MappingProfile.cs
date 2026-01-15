@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Askly.Domain.Entities;
+using Askly.Domain;
 using Askly.Application.DTOs;
 namespace Askly.Application.Profiles;
 
