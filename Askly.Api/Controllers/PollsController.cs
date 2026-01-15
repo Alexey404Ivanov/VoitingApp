@@ -7,9 +7,9 @@ public class PollsController: Controller
 {
     private readonly HttpClient _client;
 
-    public PollsController(HttpClient client)
+    public PollsController(IHttpClientFactory factory)
     {
-        _client = client;
+        _client = factory.CreateClient("ApiClient");
     }
 
     [HttpGet("/polls")]
@@ -22,10 +22,10 @@ public class PollsController: Controller
     }
 
     [HttpGet("/polls/{pollId:guid}")]
-    public async Task<IActionResult> Details([FromRoute] Guid pollId)
+    public async Task<IActionResult> Details(Guid pollId)
     {
         var poll = await _client.GetFromJsonAsync<PollDto>(
-            $"http://localhost:5000/api/polls/{pollId}");
+            $"api/polls/{pollId}");
 
         return View("Details", poll);
     }

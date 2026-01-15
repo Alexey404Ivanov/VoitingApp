@@ -6,4 +6,6 @@ public class PollDto
     public string Title { get; init; }
     public List<OptionDto> Options { get; init; }
     public bool IsMultipleChoice { get; init; }
+    public List<Guid> UserVotes { get; set; }
+    
 }

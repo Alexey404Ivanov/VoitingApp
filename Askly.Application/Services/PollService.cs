@@ -17,10 +17,22 @@ public class PollService : IPollService
         _mapper = mapper;
     }
     
-    public async Task<PollDto> GetById(Guid pollId)
+    public async Task<PollDto> GetById(Guid pollId, Guid anonUserId)
     {
+        // var votedOptions = (await _repo.GetVotesAsync(pollId))
+        //     .Where(v => v.AnonUserId == anonUserId)
+        //     .Select(v => v.OptionId)
+        //     .ToList();
+        
         var poll = await _repo.GetById(pollId);
-        return poll == null ? throw new PollNotFoundException(pollId) : _mapper.Map<PollDto>(poll);
+        var votedOptions = await _repo.GetVotedOptionIds(pollId, anonUserId);
+        
+        // if (votedOptions.Count == 0)
+        //     return _mapper.Map<PollDto>(poll);
+        //
+        var dto = _mapper.Map<PollDto>(poll);
+        dto.UserVotes = votedOptions;
+        return dto;
     }
     
     public async Task<Guid> Create(CreatePollDto pollDto)

@@ -1,4 +1,6 @@
-﻿using Askly.Api.Middleware;
+﻿using System.Net;
+using Askly.Api.Handlers;
+using Askly.Api.Middleware;
 using Askly.Application.Interfaces.Repositories;
 using Askly.Application.Profiles;
 using Askly.Domain.Entities;
@@ -21,6 +23,16 @@ builder.Services.AddLogging(logging =>
     logging.AddDebug();
 });
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddTransient<ForwardCookiesHandler>();
+
+builder.Services.AddHttpClient("ApiClient", client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:5000/");
+    })
+    .AddHttpMessageHandler<ForwardCookiesHandler>();
+
 
 builder.Services.AddControllers();   
 
@@ -30,8 +42,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddHttpClient();
-
 builder.Services.AddScoped<IPollService, PollService>();
 
 builder.Services.AddScoped<IPollsRepository, PollsRepository>();
@@ -39,12 +49,6 @@ builder.Services.AddScoped<IPollsRepository, PollsRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 var app = builder.Build();
-
-var per = 5.0 / 12 * 100;
-
-per = Math.Round(per, 1);
-
-Console.WriteLine($"{per}%");
 
 app.MapGet("/", () => Results.Redirect("/polls"));
 

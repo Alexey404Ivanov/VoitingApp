@@ -20,9 +20,10 @@ public class PollsApiController : ControllerBase
     [Produces("application/json")]
     public async Task<ActionResult<PollDto>> GetById([FromRoute] Guid pollId)
     {
+        var anonUserId = (Guid)HttpContext.Items["AnonUserId"]!;
         try
         {
-            var poll = await _service.GetById(pollId);
+            var poll = await _service.GetById(pollId, anonUserId);
             return Ok(poll);
         }
         catch (PollNotFoundException e)

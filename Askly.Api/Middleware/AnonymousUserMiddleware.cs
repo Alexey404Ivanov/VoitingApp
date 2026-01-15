@@ -12,24 +12,22 @@ public class AnonymousUserMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        if (!context.Request.Cookies.TryGetValue(CookieName, out var anonUserId))
+        if (!context.Request.Cookies.TryGetValue(CookieName, out var value) ||
+            !Guid.TryParse(value, out var anonUserId))
         {
-            anonUserId = Guid.NewGuid().ToString();
-
+            anonUserId = Guid.NewGuid();
             context.Response.Cookies.Append(
                 CookieName,
-                anonUserId,
+                anonUserId.ToString(),
                 new CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddYears(1),
                     HttpOnly = true,
                     SameSite = SameSiteMode.Lax,
-                    Secure = context.Request.IsHttps
+                    Secure = false
                 });
         }
 
-        // кладём в HttpContext для дальнейшего использования
-        context.Items["AnonUserId"] = Guid.Parse(anonUserId);
+        context.Items["AnonUserId"] = anonUserId;
 
         await _next(context);
     }

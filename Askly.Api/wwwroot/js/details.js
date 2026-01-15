@@ -1,4 +1,5 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿// javascript
+document.addEventListener('DOMContentLoaded', function () {
     const voteBtn = document.getElementById('voteBtn');
     const toastContainer = document.getElementById('toastContainer');
 
@@ -45,7 +46,7 @@
     function setInputsDisabled(formScope, disabled) {
         const inputs = formScope.querySelectorAll('input[type="radio"], input[type="checkbox"]');
         inputs.forEach(i => i.disabled = !!disabled);
-        // опционально можно добавить/удалить класс для визуального состояния
+
         const wrappers = formScope.querySelectorAll('.option-item');
         wrappers.forEach(w => {
             if (disabled) w.classList.add('option-disabled');
@@ -53,27 +54,24 @@
         });
     }
 
-// javascript
     function applyResultsToOptions(results, formScope) {
         if (!formScope || !Array.isArray(results)) return;
 
-        // Строим карту по optionId
         const votesMap = new Map();
         results.forEach(o => {
             const id = String(o.optionId ?? '');
             if (!id) return;
             const votes = Number(o.votesCount ?? 0);
-            const ratio = Number(o.ratio ?? 0); // 0..1
+            const ratio = Number(o.ratio ?? 0);
             votesMap.set(id, { votes, ratio });
         });
 
-        // Проходим по всем input, чтобы отрисовать результаты для каждого варианта
         const optionInputs = formScope.querySelectorAll('input[type="radio"], input[type="checkbox"]');
 
         optionInputs.forEach(input => {
             const optionId = String(input.value);
             const data = votesMap.get(optionId) || { votes: 0, ratio: 0 };
-            const percent = data.ratio; // один знак после запятой
+            const percent = data.ratio; // уже посчитано api, например 12.3
 
             const wrapper = input.closest('.option-item') || input.parentElement;
             if (!wrapper) return;
@@ -91,7 +89,6 @@
         });
     }
 
-
     function createCancelButton(original, selectedIdsAtVote, pollId, formScope) {
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -100,7 +97,6 @@
         btn.textContent = 'Отменить голос';
 
         btn.addEventListener('click', function () {
-            
             fetch(`/api/polls/${pollId}/vote`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
@@ -108,30 +104,32 @@
             })
                 .then(r => {
                     if (!r.ok) throw new Error("Ошибка голосования");
+                    showToast('Голос отменен');
+
+                    // убираем результаты из интерфейса
+                    try {
+                        const resultSpans = formScope.querySelectorAll('.option-result');
+                        resultSpans.forEach(s => s.remove());
+
+                        const withResults = formScope.querySelectorAll('.option-with-results');
+                        withResults.forEach(w => w.classList.remove('option-with-results'));
+                    } catch (e) {
+                        console.error('Ошибка при очистке результатов:', e);
+                    }
+
+                    setInputsDisabled(formScope, false);
+                    btn.replaceWith(original);
                 })
-            // Логируем и показываем тост
-            // console.log('Cancel payload:', JSON.stringify(payload));
-            showToast('Голос отменен');
-
-            // Убираем результаты с интерфейса: удаляем .option-result и сбрасываем классы
-            try {
-                const resultSpans = formScope.querySelectorAll('.option-result');
-                resultSpans.forEach(s => s.remove());
-
-                const withResults = formScope.querySelectorAll('.option-with-results');
-                withResults.forEach(w => w.classList.remove('option-with-results'));
-            } catch (e) {
-                console.error('Ошибка при очистке результатов:', e);
-            }
-
-            // Восстанавливаем состояние: включаем inputs и возвращаем кнопку
-            setInputsDisabled(formScope, false);
-            btn.replaceWith(original);
+                .catch(err => {
+                    console.error(err);
+                    showToast('Ошибка при отмене голоса');
+                });
         });
 
         return btn;
     }
 
+    // обработчик клика по "Голосовать"
     voteBtn.addEventListener('click', function (e) {
         e.preventDefault();
 
@@ -142,10 +140,10 @@
             showToast('Выберите хотя бы один вариант ответа');
             return;
         }
-        
+
         const pollInput = formScope.querySelector('input[name="Id"], input[id="Id"], input[type="hidden"]');
         const pollId = pollInput ? String(pollInput.value) : '';
-        
+
         let optionsIds = [];
         const checkedCheckboxes = Array.from(formScope.querySelectorAll('input.option-checkbox:checked'));
         if (checkedCheckboxes.length > 0) {
@@ -155,18 +153,14 @@
             if (checkedRadio) optionsIds.push(String(checkedRadio.value));
         }
 
-        // Сохраняем выбранные id на момент голосования
         const selectedAtVote = optionsIds.slice();
 
-        // Отключаем возможность менять выбор
         setInputsDisabled(formScope, true);
 
-        // Создаём кнопку "Отменить голос" с замыканием выбранных id
         const cancelBtn = createCancelButton(voteBtn, selectedAtVote, pollId, formScope);
         voteBtn.replaceWith(cancelBtn);
         showToast('Голос принят');
 
-        // Отправляем голос и запрашиваем результаты (опционально можем ожидать и только потом менять UI)
         fetch(`/api/polls/${pollId}/vote`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -189,8 +183,6 @@
             .catch(err => {
                 console.error(err);
                 showToast('Произошла ошибка при голосовании');
-
-                // при ошибке восстанавливаем интерактивность и кнопку
                 try {
                     const currentCancel = formScope.querySelector('#cancelBtn');
                     if (currentCancel && currentCancel.parentNode) currentCancel.replaceWith(voteBtn);
@@ -199,4 +191,58 @@
                 }
             });
     });
+
+    // --- ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ, ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ГОЛОСОВАЛ ---
+
+    (function initFromModel() {
+        const pollData = JSON.parse(
+            document.getElementById('poll-data').textContent
+        );
+
+
+
+        const formScope = document.getElementById('pollForm') || document;
+
+        // предполагаем, что сервер кладёт сюда Id выбранных опций
+        const selectedIds = Array.isArray(pollData.UserVotes)
+            ? pollData.UserVotes.map(x => String(x))
+            : [];
+
+        if (!selectedIds.length) return; // пользователь ещё не голосовал
+
+        // отмечаем выбранные варианты
+        const optionInputs = formScope.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+        optionInputs.forEach(inp => {
+            const val = String(inp.value);
+            if (selectedIds.includes(val)) {
+                inp.checked = true;
+            }
+        });
+
+        // блокируем инпуты
+        setInputsDisabled(formScope, true);
+
+        // подменяем кнопку "Голосовать" на "Отменить голос"
+        const pollInput = formScope.querySelector('input[name="Id"], input[id="Id"], input[type="hidden"]');
+        const pollId = pollInput ? String(pollInput.value) : '';
+        const cancelBtn = createCancelButton(voteBtn, selectedIds, pollId, formScope);
+        voteBtn.replaceWith(cancelBtn);
+
+        // подтягиваем и отображаем результаты
+        fetch(`/api/polls/${pollId}/results`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(r => {
+                if (!r.ok) throw new Error("Ошибка получения результатов");
+                return r.json();
+            })
+            .then(results => {
+                applyResultsToOptions(results, formScope);
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('Не удалось загрузить результаты голосования');
+            });
+    })();
 });

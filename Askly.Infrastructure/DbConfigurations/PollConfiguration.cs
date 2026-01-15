@@ -19,6 +19,11 @@ public class PollConfiguration : IEntityTypeConfiguration<PollEntity>
             .HasForeignKey(o => o.PollId);
         
         builder
+            .HasMany(p => p.Options)
+            .WithOne(o => o.Poll)
+            .HasForeignKey(o => o.PollId);
+        
+        builder
             .Navigation(p => p.Options)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
     }

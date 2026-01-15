@@ -99,8 +99,14 @@ public class PollsRepository : IPollsRepository
         await _context.SaveChangesAsync();
     }
 
+    // public async Task<List<VoteEntity>> GetVotesAsync(Guid pollId)
+    // {
+    //     return await _context.Votes
+    //         .Where(v => v.PollId == pollId)
+    //         .ToListAsync();
+    // }
     
-    public async Task<List<Guid>> GetUserVotesAsync(Guid pollId, Guid anonUserId)
+    public async Task<List<Guid>> GetVotedOptionIds(Guid pollId, Guid anonUserId)
     {
         return await _context.Votes
             .Where(v => v.PollId == pollId && v.AnonUserId == anonUserId)
