@@ -2,7 +2,22 @@
 
 public class VoteEntity
 {
-    public Guid PollId { get; set; }
-    public Guid OptionId { get; set; }
-    public Guid AnonUserId { get; set; }
+    public Guid Id { get; private set; }
+    public Guid UserId { get; private set; }
+    public Guid PollId { get; private set; }
+    public Guid OptionId { get; private set; }
+    
+    private VoteEntity() { }
+    private VoteEntity(Guid userId, Guid pollId, Guid optionId)
+    {
+        Id = Guid.NewGuid();
+        UserId = userId;
+        PollId = pollId;
+        OptionId = optionId;
+    }
+    
+    internal static VoteEntity Create(Guid userId, Guid pollId, Guid optionId)
+    { 
+        return new VoteEntity(userId, pollId, optionId);
+    }
 }

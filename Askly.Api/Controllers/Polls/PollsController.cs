@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Askly.Application.DTOs;
+﻿using Askly.Application.DTOs.Polls;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Askly.Api.Controllers;
+namespace Askly.Api.Controllers.Polls;
 
 public class PollsController: Controller
 {

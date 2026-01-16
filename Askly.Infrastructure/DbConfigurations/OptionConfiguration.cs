@@ -11,13 +11,10 @@ public class OptionConfiguration : IEntityTypeConfiguration<OptionEntity>
         builder.HasKey(o => o.Id);
 
         builder.Property(o => o.Text)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(75);
         
         builder.Property(o => o.VotesCount)
             .IsRequired();
-        // builder
-        //     .HasMany(o => o.Votes)
-        //     .WithOne(v => v.Option)
-        //     .HasForeignKey(v => v.OptionId);
     }
 }

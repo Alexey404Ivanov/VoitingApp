@@ -1,6 +1,9 @@
-﻿namespace Askly.Application.Interfaces.Repositories;
+﻿using Askly.Domain;
 
-public class IUsersRepository
+namespace Askly.Application.Interfaces.Repositories;
+
+public interface IUsersRepository
 {
-    
+    Task Add(UserEntity user);
+    Task<UserEntity> GetByEmail(string email);
 }

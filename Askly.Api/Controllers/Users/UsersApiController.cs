@@ -7,15 +7,14 @@ namespace Askly.Api.Controllers.Users;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController: ControllerBase
+public class UsersApiController: ControllerBase
 {
     private readonly IUsersService _service;
     
-    public UsersController(IUsersService service)
+    public UsersApiController(IUsersService service)
     {
         _service = service;
     }
-    
     
     [HttpPost]
     [Produces("application/json")]
@@ -28,5 +27,18 @@ public class UsersController: ControllerBase
         
         await _service.Register(userDto.UserName, userDto.Email, userDto.Password);
         return Ok();
+    }
+    
+    [HttpPost]
+    [Produces("application/json")]
+    public async Task<ActionResult> Login([FromBody] LoginUserDto? userDto)
+    {
+        if (userDto == null)
+            return BadRequest();
+        if (!ModelState.IsValid)
+            return UnprocessableEntity(ModelState);
+        
+        var token = await _service.Login(userDto.Email, userDto.Password);
+        return Ok(token);
     }
 }

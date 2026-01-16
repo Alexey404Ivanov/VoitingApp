@@ -8,16 +8,21 @@ public class OptionEntity
     public Guid PollId { get; private set; }
     public PollEntity Poll { get; private set; }
     
-    // public List<VoteEntity> Votes { get; set; }
-    public int VotesCount = 0;
+    public int VotesCount { get; private set; }
     
     private OptionEntity() { }
     
-    internal OptionEntity(string text)
+    private OptionEntity(string text, PollEntity poll)
     {
-        Id = Guid.NewGuid();
+        Id = Guid.Empty;
         Text = text;
-        // Votes = votes;
-        // VotesCount = votesCount;
+        PollId = poll.Id;
+        Poll = poll;
+        VotesCount = 0;
+    }
+    
+    internal static OptionEntity Create(string text, PollEntity poll)
+    {
+        return new OptionEntity(text, poll);
     }
 }

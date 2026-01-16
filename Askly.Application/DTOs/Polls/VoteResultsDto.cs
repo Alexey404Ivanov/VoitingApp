@@ -1,4 +1,4 @@
-﻿namespace Askly.Application.DTOs;
+﻿namespace Askly.Application.DTOs.Polls;
 
 public class VoteResultsDto
 {

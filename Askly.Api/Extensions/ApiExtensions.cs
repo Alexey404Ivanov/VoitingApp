@@ -1,0 +1,34 @@
+﻿using System.Text;
+using Askly.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
+namespace Askly.Api.Extensions;
+
+public static class ApiExtensions
+{
+    public static void AddApiAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var jwtOptions = configuration
+            .GetSection(nameof(JwtOptions))
+            .Get<JwtOptions>()!;
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+                };
+            });
+
+        services.AddAuthorization();
+    }
+}

@@ -33,7 +33,7 @@ public class PollsRepository : IPollsRepository
         return poll;
     }
 
-    public async Task<Guid> Create(PollEntity poll)
+    public async Task<Guid> Add(PollEntity poll)
     {
         _context.Poles.Add(poll);
         await _context.SaveChangesAsync();

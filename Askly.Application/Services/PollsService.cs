@@ -1,7 +1,9 @@
 ﻿using Askly.Application.Interfaces.Repositories;
 using Askly.Application.DTOs;
+using Askly.Application.DTOs.Polls;
 using Askly.Domain;
 using Askly.Application.Exceptions;
+using Askly.Application.Interfaces.Services;
 using AutoMapper;
 
 namespace Askly.Application.Services;
@@ -35,13 +37,13 @@ public class PollsService : IPollsService
         return dto;
     }
     
-    public async Task<Guid> Create(CreatePollDto pollDto)
+    public async Task<Guid> Create(string title, List<CreateOptionDto> options, bool isMultipleChoice)
     {
-        var poll = new PollEntity(pollDto.Title, pollDto.IsMultipleChoice);
-        foreach (var optionDto in pollDto.Options)
+        var poll = PollEntity.Create(title, isMultipleChoice);
+        foreach (var optionDto in options)
             poll.AddOption(optionDto.Text);
         
-        return await _repo.Create(poll);
+        return await _repo.Add(poll);
     }
     
     public async Task<List<PollDto>> GetAll()

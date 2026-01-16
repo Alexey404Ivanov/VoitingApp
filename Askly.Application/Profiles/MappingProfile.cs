@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Askly.Domain;
 using Askly.Application.DTOs;
+using Askly.Application.DTOs.Polls;
+
 namespace Askly.Application.Profiles;
 
 public class MappingProfile : Profile

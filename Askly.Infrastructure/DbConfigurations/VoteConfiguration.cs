@@ -8,8 +8,17 @@ public class VoteConfiguration : IEntityTypeConfiguration<VoteEntity>
 {
     public void Configure(EntityTypeBuilder<VoteEntity> builder)
     {
-        builder.HasKey(v => new { v.PollId, v.OptionId, v.AnonUserId });
+        builder.HasKey(v => v.Id);
 
-        builder.HasIndex(v => new { v.PollId, v.AnonUserId });
+        builder.Property(v => v.OptionId)
+            .IsRequired();
+        
+        builder.Property(v => v.UserId)
+            .IsRequired();
+        
+        builder.HasOne<PollEntity>()
+            .WithMany()
+            .HasForeignKey(v => v.PollId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

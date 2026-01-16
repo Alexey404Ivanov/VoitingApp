@@ -11,21 +11,17 @@ public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.HasKey(u => u.Id);
         
         builder
-            .Property(u => u.Login)
+            .Property(u => u.Name)
+            .HasMaxLength(25)
             .IsRequired();
+
+        builder
+            .Property(u => u.Email)
+            .IsRequired()
+            .HasMaxLength(50);
         
         builder
-            .Property(u => u.Password)
+            .Property(u => u.HashedPassword)
             .IsRequired();
-        
-        // builder
-        //     .HasMany(u => u.CreatedPolls)
-        //     .WithOne(p => p.User)
-        //     .HasForeignKey(p => p.UserId);
-        
-        // builder
-        //     .HasMany(u => u.Votes)
-        //     .WithOne(v => v.User)
-        //     .HasForeignKey(v => v.UserId);
     }
 }

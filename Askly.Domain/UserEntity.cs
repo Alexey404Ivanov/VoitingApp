@@ -2,23 +2,23 @@
 
 public class UserEntity
 {
-    public Guid Id { get; set; }
-    public string Login { get; set; }
-    public string Password { get; set; }
-    public List<PollEntity> CreatedPolls { get; set; }
-    public List<VoteEntity> Votes { get; set; }
-
-    public UserEntity()
+    public Guid Id { get; private set; }
+    public string Name { get; private set; }
+    public string Email { get; private set; }
+    public string HashedPassword { get; private set; }
+    
+    private UserEntity() {}
+    
+    private UserEntity(string name, string email, string hashedPassword)
     {
         Id = Guid.NewGuid();
+        Name = name;
+        Email = email;
+        HashedPassword = hashedPassword;
     }
-    
-    public UserEntity(Guid id, string login, string password, List<PollEntity> createdPolls, List<VoteEntity> votes)
+
+    public static UserEntity Create(string name, string email, string hashedPassword)
     {
-        Id = id;
-        Login = login;
-        Password = password;
-        CreatedPolls = createdPolls;
-        Votes = votes;
+        return new UserEntity(name, email, hashedPassword);
     }
 }

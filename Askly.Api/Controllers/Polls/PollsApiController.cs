@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Askly.Application.Interfaces.Repositories;
-using Askly.Application.Services;
-using Askly.Application.DTOs;
+﻿using Askly.Application.DTOs.Polls;
 using Askly.Application.Exceptions;
-namespace Askly.Api.Controllers;
+using Askly.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Askly.Api.Controllers.Polls;
 
 [ApiController]
 [Route("api/polls")]
@@ -54,7 +54,7 @@ public class PollsApiController : ControllerBase
             return BadRequest();
         if (!ModelState.IsValid)
             return UnprocessableEntity(ModelState);
-        var createdPollId = await _service.Create(pollDto);
+        var createdPollId = await _service.Create(pollDto.Title, pollDto.Options, pollDto.IsMultipleChoice);
         return Ok(createdPollId);
     }
     

@@ -10,18 +10,18 @@ public class PollConfiguration : IEntityTypeConfiguration<PollEntity>
     {
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Title)
+        builder.Property(p => p.UserId)
             .IsRequired();
         
-        builder
-            .HasMany(p => p.Options)
-            .WithOne(o => o.Poll)
-            .HasForeignKey(o => o.PollId);
+        builder.Property(p => p.Title)
+            .IsRequired()
+            .HasMaxLength(75);
         
         builder
             .HasMany(p => p.Options)
             .WithOne(o => o.Poll)
-            .HasForeignKey(o => o.PollId);
+            .HasForeignKey(o => o.PollId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .Navigation(p => p.Options)

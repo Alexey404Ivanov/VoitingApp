@@ -1,6 +1,9 @@
-﻿using Askly.Api.Handlers;
+﻿using Askly.Api.Extensions;
+using Askly.Api.Handlers;
 using Askly.Api.Middleware;
+using Askly.Application.Interfaces.Auth;
 using Askly.Application.Interfaces.Repositories;
+using Askly.Application.Interfaces.Services;
 using Askly.Application.Profiles;
 using Askly.Infrastructure.Repositories;
 using Askly.Application.Services;
@@ -32,6 +35,10 @@ builder.Services.AddHttpClient("ApiClient", client =>
     .AddHttpMessageHandler<ForwardCookiesHandler>();
 
 
+builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+
+builder.Services.AddApiAuthentication(configuration);
+
 builder.Services.AddControllers();   
 
 builder.Services.AddEndpointsApiExplorer(); 
@@ -43,6 +50,14 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<IPollsService, PollsService>();
 
 builder.Services.AddScoped<IPollsRepository, PollsRepository>();
+
+builder.Services.AddScoped<IUsersService, UsersService>();
+
+builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
+builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
@@ -66,6 +81,10 @@ app.Use(async (context, next) =>
 });
 
 app.UseMiddleware<AnonymousUserMiddleware>();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();                
 

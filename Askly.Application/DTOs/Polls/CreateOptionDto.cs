@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Askly.Application.DTOs;
+namespace Askly.Application.DTOs.Polls;
 
 public class CreateOptionDto
 {

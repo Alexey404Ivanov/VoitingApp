@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Askly.Domain;
 
-namespace Askly.Application.DTOs;
+namespace Askly.Application.DTOs.Polls;
 
 public class CreatePollDto
 {
