@@ -25,7 +25,8 @@ public class PollsController: Controller
     public async Task<IActionResult> Details(Guid pollId)
     {
         var poll = await _client.GetFromJsonAsync<PollDto>(
-            $"api/polls/{pollId}");
+            $"http://localhost:5000/api/polls/{pollId}");
+        
 
         return View("Details", poll);
     }

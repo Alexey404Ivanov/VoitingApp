@@ -4,13 +4,13 @@ namespace Askly.Application.Interfaces.Services;
 
 public interface IPollsService
 {
-    Task<PollDto> GetById(Guid pollId, Guid anonUserId);
-    Task<Guid> Create(string title, List<CreateOptionDto> options, bool isMultipleChoice);
+    Task<PollDto> GetById(Guid pollId, Guid userId);
+    Task<Guid> Create(string title, List<CreateOptionDto> options, bool isMultipleChoice, Guid userId);
     Task<List<PollDto>> GetAll();
     Task DeletePoll(Guid id);
-    Task Vote(Guid id, List<Guid> optionsIds);
-    Task VoteAsync(Guid id, List<Guid> optionsIds, Guid anonUserId);
-    Task DeleteVote(Guid pollId, List<Guid> optionsIds, Guid anonUserId);
+    // Task Vote(Guid id, List<Guid> optionsIds);
+    Task VoteAsync(Guid pollId, List<Guid> optionsIds, Guid userId);
+    Task DeleteVote(Guid pollId, Guid userId);
     Task<List<VoteResultsDto>> GetResults(Guid pollId);
     // void DeleteVote(Guid pollId, List<Guid> optionsIds);
     // PollResultsDto ShowResults(Guid pollId);

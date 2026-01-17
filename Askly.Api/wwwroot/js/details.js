@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`/api/polls/${pollId}/vote`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(selectedIdsAtVote)
+                // body: JSON.stringify(selectedIdsAtVote)
             })
                 .then(r => {
                     if (!r.ok) throw new Error("Ошибка голосования");

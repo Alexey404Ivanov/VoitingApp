@@ -27,6 +27,8 @@ public class UsersService : IUsersService
     public async Task<string> Login(string email, string password)
     {
         var user = await _usersRepository.GetByEmail(email);
+        if (user == null)
+            throw new Exception("User not found");
         var isPasswordValid = _hasher.VerifyPassword(password, user.HashedPassword);
         if (!isPasswordValid)
         {

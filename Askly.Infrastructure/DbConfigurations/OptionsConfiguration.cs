@@ -4,7 +4,7 @@ using Askly.Domain;
 
 namespace Askly.Infrastructure.DbConfigurations;
 
-public class OptionConfiguration : IEntityTypeConfiguration<OptionEntity>
+public class OptionsConfiguration : IEntityTypeConfiguration<OptionEntity>
 {
     public void Configure(EntityTypeBuilder<OptionEntity> builder)
     {
@@ -13,8 +13,5 @@ public class OptionConfiguration : IEntityTypeConfiguration<OptionEntity>
         builder.Property(o => o.Text)
             .IsRequired()
             .HasMaxLength(75);
-        
-        builder.Property(o => o.VotesCount)
-            .IsRequired();
     }
 }

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Askly.Api.Controllers.Users;
 
-
 [ApiController]
 [Route("api/users")]
 public class UsersApiController: ControllerBase
@@ -16,7 +15,7 @@ public class UsersApiController: ControllerBase
         _service = service;
     }
     
-    [HttpPost]
+    [HttpPost("register")]
     [Produces("application/json")]
     public async Task<ActionResult> Register([FromBody] RegisterUserDto? userDto)
     {
@@ -29,7 +28,7 @@ public class UsersApiController: ControllerBase
         return Ok();
     }
     
-    [HttpPost]
+    [HttpPost("login")]
     [Produces("application/json")]
     public async Task<ActionResult> Login([FromBody] LoginUserDto? userDto)
     {
@@ -39,6 +38,9 @@ public class UsersApiController: ControllerBase
             return UnprocessableEntity(ModelState);
         
         var token = await _service.Login(userDto.Email, userDto.Password);
+        
+        HttpContext.Response.Cookies.Append("jwt-token", token);
+        
         return Ok(token);
     }
 }

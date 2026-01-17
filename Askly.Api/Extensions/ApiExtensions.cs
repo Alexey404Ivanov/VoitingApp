@@ -27,6 +27,15 @@ public static class ApiExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["jwt-token"];
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
         services.AddAuthorization();

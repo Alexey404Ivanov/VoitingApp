@@ -1,17 +1,28 @@
 ﻿using Askly.Application.Interfaces.Repositories;
 using Askly.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Askly.Infrastructure.Repositories;
 
 public class UsersRepository : IUsersRepository
 {
-    public Task Add(UserEntity user)
+    private readonly AppDbContext _context;
+
+    public UsersRepository(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
+    }
+    
+    public async Task Add(UserEntity user)
+    {
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
     }
 
-    public Task<UserEntity> GetByEmail(string email)
+    public async Task<UserEntity?> GetByEmail(string email)
     {
-        throw new NotImplementedException();
+        return await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == email);
     }
 }

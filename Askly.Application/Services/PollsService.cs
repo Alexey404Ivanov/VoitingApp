@@ -10,24 +10,29 @@ namespace Askly.Application.Services;
 
 public class PollsService : IPollsService
 {
-    private readonly IPollsRepository _repo;
+    private readonly IPollsRepository _pollsRepository;
+    private readonly IVotesRepository _votesRepository;
     private readonly IMapper _mapper;
     
-    public PollsService(IPollsRepository repo, IMapper mapper)
+    public PollsService(
+        IPollsRepository pollsRepository,
+        IVotesRepository votesRepository,
+        IMapper mapper)
     {
-        _repo = repo;
+        _pollsRepository = pollsRepository;
+        _votesRepository = votesRepository;
         _mapper = mapper;
     }
     
-    public async Task<PollDto> GetById(Guid pollId, Guid anonUserId)
+    public async Task<PollDto> GetById(Guid pollId, Guid userId)
     {
         // var votedOptions = (await _repo.GetVotesAsync(pollId))
         //     .Where(v => v.AnonUserId == anonUserId)
         //     .Select(v => v.OptionId)
         //     .ToList();
         
-        var poll = await _repo.GetById(pollId);
-        var votedOptions = await _repo.GetVotedOptionIds(pollId, anonUserId);
+        var poll = await _pollsRepository.GetById(pollId);
+        var votedOptions = await _votesRepository.GetUserVotedOptionIds(pollId, userId);
         
         // if (votedOptions.Count == 0)
         //     return _mapper.Map<PollDto>(poll);
@@ -37,18 +42,23 @@ public class PollsService : IPollsService
         return dto;
     }
     
-    public async Task<Guid> Create(string title, List<CreateOptionDto> options, bool isMultipleChoice)
+    public async Task<Guid> Create(
+        string title,
+        List<CreateOptionDto> options,
+        bool isMultipleChoice,
+        Guid userId)
     {
-        var poll = PollEntity.Create(title, isMultipleChoice);
+        var poll = PollEntity.Create(title, isMultipleChoice, userId);
+        
         foreach (var optionDto in options)
             poll.AddOption(optionDto.Text);
         
-        return await _repo.Add(poll);
+        return await _pollsRepository.Add(poll);
     }
     
     public async Task<List<PollDto>> GetAll()
     {
-        var polls = await _repo.GetAll();
+        var polls = await _pollsRepository.GetAll();
         return _mapper.Map<List<PollDto>>(polls);
     }
     
@@ -57,33 +67,33 @@ public class PollsService : IPollsService
         // var poll = await _repo.GetIfExists(id);
         // if (poll == null)
         //     throw new PollNotFoundException(id);
-        var isDeletedSucceed = await _repo.Delete(id);
+        var isDeletedSucceed = await _pollsRepository.Delete(id);
         if (!isDeletedSucceed)
             throw new PollNotFoundException(id);
     }
     
-    public async Task Vote(Guid id, List<Guid> optionsIds)
-    {
-        var isVoteSucceed = await _repo.Vote(id, optionsIds);
-        if (!isVoteSucceed)
-            throw new PollNotFoundException(id);
-    }
+    // public async Task Vote(Guid id, List<Guid> optionsIds)
+    // {
+    //     var isVoteSucceed = await _pollsRepository.Vote(id, optionsIds);
+    //     if (!isVoteSucceed)
+    //         throw new PollNotFoundException(id);
+    // }
     
-    public async Task VoteAsync(Guid id, List<Guid> optionsIds, Guid anonUserId)
+    public async Task VoteAsync(Guid pollId, List<Guid> optionsIds, Guid userId)
     {
-        await _repo.VoteAsync(id, optionsIds, anonUserId);
+        await _votesRepository.VoteAsync(pollId, optionsIds, userId);
     }
 
-    public async Task DeleteVote(Guid pollId, List<Guid> optionsIds, Guid anonUserId)
+    public async Task DeleteVote(Guid pollId, Guid userId)
     {
-        await _repo.DeleteVote(pollId, optionsIds, anonUserId);
+        await _votesRepository.DeleteVote(pollId, userId);
     }
     
     public async Task<List<VoteResultsDto>> GetResults(Guid pollId)
     {
-        var votedOptions = await _repo.GetResults(pollId);
-        var votedUsersCount = await _repo.GetVotedUsersCount(pollId);
-        var allOptionGuids = (await _repo.GetById(pollId))!.Options.Select(x => x.Id).ToList();
+        var votedOptions = await _votesRepository.GetResults(pollId);
+        var votedUsersCount = await _votesRepository.GetVotedUsersCount(pollId);
+        var allOptionGuids = (await _pollsRepository.GetById(pollId))!.Options.Select(x => x.Id).ToList();
         var votedOptionGuids = votedOptions.Select(t => t.Item1).ToHashSet();
         var results = new List<VoteResultsDto>();
         foreach (var optionGuid in allOptionGuids)

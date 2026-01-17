@@ -16,7 +16,7 @@ public class VoteEntity
         OptionId = optionId;
     }
     
-    internal static VoteEntity Create(Guid userId, Guid pollId, Guid optionId)
+    public static VoteEntity Create(Guid userId, Guid pollId, Guid optionId)
     { 
         return new VoteEntity(userId, pollId, optionId);
     }

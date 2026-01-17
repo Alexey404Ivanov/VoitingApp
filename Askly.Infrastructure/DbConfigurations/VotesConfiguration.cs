@@ -4,7 +4,7 @@ using Askly.Domain;
 
 namespace Askly.Infrastructure.DbConfigurations;
 
-public class VoteConfiguration : IEntityTypeConfiguration<VoteEntity>
+public class VotesConfiguration : IEntityTypeConfiguration<VoteEntity>
 {
     public void Configure(EntityTypeBuilder<VoteEntity> builder)
     {

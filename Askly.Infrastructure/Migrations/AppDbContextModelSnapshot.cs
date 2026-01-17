@@ -22,7 +22,7 @@ namespace Askly.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Askly.Domain.Entities.OptionEntity", b =>
+            modelBuilder.Entity("Askly.Domain.OptionEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,10 +33,8 @@ namespace Askly.Infrastructure.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("VotesCount")
-                        .HasColumnType("integer");
+                        .HasMaxLength(75)
+                        .HasColumnType("character varying(75)");
 
                     b.HasKey("Id");
 
@@ -45,7 +43,7 @@ namespace Askly.Infrastructure.Migrations
                     b.ToTable("Options");
                 });
 
-            modelBuilder.Entity("Askly.Domain.Entities.PollEntity", b =>
+            modelBuilder.Entity("Askly.Domain.PollEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -56,34 +54,67 @@ namespace Askly.Infrastructure.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(75)
+                        .HasColumnType("character varying(75)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.ToTable("Poles");
                 });
 
-            modelBuilder.Entity("Askly.Domain.Entities.VoteEntity", b =>
+            modelBuilder.Entity("Askly.Domain.UserEntity", b =>
                 {
-                    b.Property<Guid>("PollId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("HashedPassword")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Askly.Domain.VoteEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("OptionId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AnonUserId")
+                    b.Property<Guid>("PollId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("PollId", "OptionId", "AnonUserId");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
-                    b.HasIndex("PollId", "AnonUserId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("PollId");
 
                     b.ToTable("Votes");
                 });
 
-            modelBuilder.Entity("Askly.Domain.Entities.OptionEntity", b =>
+            modelBuilder.Entity("Askly.Domain.OptionEntity", b =>
                 {
-                    b.HasOne("Askly.Domain.Entities.PollEntity", "Poll")
+                    b.HasOne("Askly.Domain.PollEntity", "Poll")
                         .WithMany("Options")
                         .HasForeignKey("PollId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -92,7 +123,16 @@ namespace Askly.Infrastructure.Migrations
                     b.Navigation("Poll");
                 });
 
-            modelBuilder.Entity("Askly.Domain.Entities.PollEntity", b =>
+            modelBuilder.Entity("Askly.Domain.VoteEntity", b =>
+                {
+                    b.HasOne("Askly.Domain.PollEntity", null)
+                        .WithMany()
+                        .HasForeignKey("PollId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Askly.Domain.PollEntity", b =>
                 {
                     b.Navigation("Options");
                 });

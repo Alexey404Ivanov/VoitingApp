@@ -55,49 +55,31 @@ public class PollsRepository : IPollsRepository
         return true;
     }
 
-    public async Task<bool> Vote(Guid pollId, List<Guid> optionsIds)
-    {
-        await _context.Options
-            .Where(o => o.PollId == pollId)
-            .Where(o => optionsIds.Contains(o.Id))
-            .ExecuteUpdateAsync(s =>
-                s.SetProperty(
-                    o => o.VotesCount,
-                    o => o.VotesCount + 1
-                ));
-        
-        await _context.SaveChangesAsync();
-        return true;
-    }
+    // public async Task<bool> Vote(Guid pollId, List<Guid> optionsIds)
+    // {
+    //     await _context.Options
+    //         .Where(o => o.PollId == pollId)
+    //         .Where(o => optionsIds.Contains(o.Id))
+    //         .ExecuteUpdateAsync(s =>
+    //             s.SetProperty(
+    //                 o => o.VotesCount,
+    //                 o => o.VotesCount + 1
+    //             ));
+    //     
+    //     await _context.SaveChangesAsync();
+    //     return true;
+    // }
     
-    public async Task VoteAsync(Guid pollId, List<Guid> optionIds, Guid anonUserId)
-    {
-        // удаляем старые голоса пользователя
-        await _context.Votes
-            .Where(v => v.PollId == pollId && v.AnonUserId == anonUserId)
-            .ExecuteDeleteAsync();
     
-        // добавляем новые
-        var votes = optionIds.Select(optionId => new VoteEntity
-        {
-            PollId = pollId,
-            OptionId = optionId,
-            AnonUserId = anonUserId
-        });
-    
-        await _context.Votes.AddRangeAsync(votes);
-        await _context.SaveChangesAsync();
-    }
 
-    public async Task DeleteVote(Guid pollId, List<Guid> optionIds, Guid anonUserId)
-    {
-        var votesToDelete = await _context.Votes
-            .Where(v => v.PollId == pollId && v.AnonUserId == anonUserId && optionIds.Contains(v.OptionId))
-            .ToListAsync();
-        
-        _context.Votes.RemoveRange(votesToDelete);
-        await _context.SaveChangesAsync();
-    }
+    // public async Task DeleteVote(Guid pollId, Guid userId)
+    // {
+    //     await _context.Votes
+    //         .Where(v => v.PollId == pollId && v.UserId == userId)
+    //         .ExecuteDeleteAsync();
+    //     
+    //     await _context.SaveChangesAsync();
+    // }
 
     // public async Task<List<VoteEntity>> GetVotesAsync(Guid pollId)
     // {
@@ -106,30 +88,4 @@ public class PollsRepository : IPollsRepository
     //         .ToListAsync();
     // }
     
-    public async Task<List<Guid>> GetVotedOptionIds(Guid pollId, Guid anonUserId)
-    {
-        return await _context.Votes
-            .Where(v => v.PollId == pollId && v.AnonUserId == anonUserId)
-            .Select(v => v.OptionId)
-            .ToListAsync();
-    }
-
-    public async Task<int> GetVotedUsersCount(Guid pollId)
-    {
-        return await _context.Votes
-            .AsNoTracking()
-            .Where(v => v.PollId == pollId)
-            .Select(v => v.AnonUserId)
-            .Distinct()
-            .CountAsync();
-    }
-    public async Task<List<Tuple<Guid, int>>> GetResults(Guid pollId)
-    {
-        return await _context.Votes
-            .AsNoTracking()
-            .Where(v => v.PollId == pollId)
-            .GroupBy(v => v.OptionId)
-            .Select(g => new Tuple<Guid, int>(g.Key, g.Count()))
-            .ToListAsync();
-    }
 }

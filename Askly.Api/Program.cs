@@ -26,14 +26,7 @@ builder.Services.AddLogging(logging =>
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddTransient<ForwardCookiesHandler>();
-
-builder.Services.AddHttpClient("ApiClient", client =>
-    {
-        client.BaseAddress = new Uri("http://localhost:5000/");
-    })
-    .AddHttpMessageHandler<ForwardCookiesHandler>();
-
+builder.Services.AddHttpClient();
 
 builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 
@@ -54,6 +47,8 @@ builder.Services.AddScoped<IPollsRepository, PollsRepository>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+
+builder.Services.AddScoped<IVotesRepository, VotesRepository>();
 
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 
@@ -80,7 +75,7 @@ app.Use(async (context, next) =>
     Console.WriteLine($"Outgoing: {context.Response.StatusCode}");
 });
 
-app.UseMiddleware<AnonymousUserMiddleware>();
+// app.UseMiddleware<AnonymousUserMiddleware>();
 
 app.UseAuthentication();
 

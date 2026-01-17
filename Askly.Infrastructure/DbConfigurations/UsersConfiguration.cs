@@ -4,7 +4,7 @@ using Askly.Domain;
 
 namespace Askly.Infrastructure.DbConfigurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
+public class UsersConfiguration : IEntityTypeConfiguration<UserEntity>
 {
     public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
