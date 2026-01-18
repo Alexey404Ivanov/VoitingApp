@@ -22,4 +22,10 @@ public class UsersController : Controller
     {
         return View("Login");
     }
+
+    [HttpGet("/profile")]
+    public IActionResult Profile()
+    {
+        return View("Profile");
+    }
 }

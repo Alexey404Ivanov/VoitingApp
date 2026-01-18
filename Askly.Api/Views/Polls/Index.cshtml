@@ -32,8 +32,16 @@
 
     <div class="header-actions">
         <button id="btnAdd" class="add-button btn-palette">Создать опрос</button>
-        <button id="btnRegister" class="add-button btn-palette" onclick="switchToRegistration()">Зарегистрироваться</button>
-        <button id="btnLogin" class="add-button btn-palette" onclick="switchToAuthorization()">Войти</button>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <button class="add-button btn-palette" onclick="openProfile()">Профиль</button>
+            <button class="add-button btn-palette" onclick="logout()">Выйти</button>
+        }
+        else
+        {
+            <button id="btnRegister" class="add-button btn-palette" onclick="switchToRegistration()">Зарегистрироваться</button>
+            <button id="btnLogin" class="add-button btn-palette" onclick="switchToAuthorization()">Войти</button>
+        }
     </div>
 }
 
@@ -95,6 +103,5 @@
     </div>
 
     <script src="~/js/index.js"></script>
-    
 </main>
 

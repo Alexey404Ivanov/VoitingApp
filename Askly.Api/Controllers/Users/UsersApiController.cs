@@ -39,8 +39,24 @@ public class UsersApiController: ControllerBase
         
         var token = await _service.Login(userDto.Email, userDto.Password);
         
-        HttpContext.Response.Cookies.Append("jwt-token", token);
+        HttpContext.Response.Cookies.Append("jwt-token", token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict
+        });
         
         return Ok(token);
     }
+    
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        HttpContext.Response.Cookies.Delete("jwt-token");
+        return Ok();
+    }
+    
+    // [HttpGet("profile")]
+    // [Produces("application/json")]
+
 }

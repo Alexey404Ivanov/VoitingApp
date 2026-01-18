@@ -5,7 +5,69 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/details.css" />
+    <style>
+        /* Контейнер регистрации */
+        .poll-details {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .poll-form fieldset {
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Блок полей */
+        .poll-form .poll-options {
+            margin: 6px 0 16px;
+            padding: 0;
+        }
+
+        /* Центрируем "белую область" инпутов */
+        .poll-form .poll-options .option-item {
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .poll-form .poll-options .option-item input {
+            display: block;
+            width: min(100%, 420px);
+            margin: 0 auto;          /* одинаково слева и справа */
+            box-sizing: border-box;
+            font-size: 18px;
+            line-height: 1.5;
+            padding: 14px 16px;
+            min-height: 52px;
+            border: 1px solid #c9ced6;
+            border-radius: 16px;
+            background: #fff;
+            color: #111827;
+            outline: none;
+            transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+        }
+
+        .poll-form .poll-options .option-item input::placeholder {
+            color: #4b5563;
+            opacity: 1;
+            font-size: 17px;
+        }
+
+        .poll-form .poll-options .option-item input:focus {
+            border-color: #6a9cff;
+            box-shadow: 0 0 0 3px rgba(106, 156, 255, 0.2);
+            background: #fff;
+        }
+
+        .vote-button#registerBtn {
+            font-size: 18px;
+            padding: 12px 18px;
+            border-radius: 10px;
+        }
+    </style>
 }
+
 
 <main class="main-content" role="main">
     <div class="poll-details">
@@ -15,18 +77,15 @@
             <fieldset>
                 <div class="poll-options">
                     <label class="option-item">
-                        <input type="text" name="Name" id="regName" required placeholder="Введите ваше имя" />
-                        <span class="option-text">Ваше имя</span>
+                        <input type="text" name="Name" id="regName" placeholder="Ваше имя" />
                     </label>
 
                     <label class="option-item">
-                        <input type="email" name="Email" id="regEmail" required placeholder="Введите e-mail" />
-                        <span class="option-text">E-mail</span>
+                        <input type="text" name="Email" id="regEmail" placeholder="E-mail" />
                     </label>
 
                     <label class="option-item">
-                        <input type="password" name="Password" id="regPassword" required minlength="6" placeholder="Введите пароль" />
-                        <span class="option-text">Пароль</span>
+                        <input type="text" name="Password" id="regPassword" placeholder="Пароль" />
                     </label>
                 </div>
             </fieldset>
@@ -40,50 +99,4 @@
     <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 </main>
 
-<script>
-    // Небольшая валидация и уведомление, reuse стили тостов
-    (function () {
-        const form = document.getElementById('registerForm');
-        const toastContainer = document.getElementById('toastContainer');
-
-        if (!form) return;
-
-        function showToast(message, timeout = 4000) {
-            if (!toastContainer) return;
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = '<div class="toast-text"></div>';
-            toast.querySelector('.toast-text').textContent = message;
-
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'toast-close';
-            closeBtn.setAttribute('aria-label', 'Закрыть');
-            closeBtn.innerHTML = '&times;';
-            closeBtn.addEventListener('click', () => hideToast(toast));
-            toast.appendChild(closeBtn);
-
-            toastContainer.prepend(toast);
-            requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
-
-            const timer = setTimeout(() => hideToast(toast), timeout);
-            function hideToast(node) {
-                clearTimeout(timer);
-                node.classList.remove('show');
-                node.classList.add('hide');
-                node.addEventListener('transitionend', () => node.parentNode && node.parentNode.removeChild(node), { once: true });
-            }
-        }
-
-        form.addEventListener('submit', function (e) {
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-
-            if (!name || !email || !password) {
-                e.preventDefault();
-                showToast('Заполните все поля');
-                return;
-            }
-        });
-    })();
-</script>
+<script src="/js/register.js"></script>

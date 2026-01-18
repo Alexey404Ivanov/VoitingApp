@@ -112,6 +112,15 @@ window.addEventListener("click", (e) => {
     }
 });
 
+function logout() {
+    fetch("/api/users/logout", {
+        method: "POST",
+        credentials: "include"
+    }).then(() => {
+        window.location.href = "/polls";
+    });
+}
+
 function switchToRegistration() {
     window.location.href = "/register";
 }
