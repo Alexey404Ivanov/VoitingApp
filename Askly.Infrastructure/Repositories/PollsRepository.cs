@@ -1,5 +1,5 @@
 ﻿using Askly.Application.Interfaces.Repositories;
-using Askly.Domain.Entities;
+using Askly.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Askly.Infrastructure.Repositories;
@@ -23,17 +23,17 @@ public class PollsRepository : IPollsRepository
         return polls;
     }
     
-    public async Task<PollEntity?> GetById(Guid id)
+    public async Task<PollEntity?> GetById(Guid pollId)
     {
         var poll = await _context.Poles
             .AsNoTracking()
             .Include(p => p.Options)
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == pollId);
 
         return poll;
     }
 
-    public async Task<Guid> Create(PollEntity poll)
+    public async Task<Guid> Add(PollEntity poll)
     {
         _context.Poles.Add(poll);
         await _context.SaveChangesAsync();
@@ -41,11 +41,11 @@ public class PollsRepository : IPollsRepository
         return poll.Id;
     }
 
-    public async Task<bool> Delete(Guid id)
+    public async Task<bool> Delete(Guid pollId)
     {
         var poll = await _context.Poles
             .Include(p => p.Options)    
-            .FirstOrDefaultAsync(p => p.Id == id);
+            .FirstOrDefaultAsync(p => p.Id == pollId);
         
         if (poll == null) return false;
         
@@ -55,18 +55,37 @@ public class PollsRepository : IPollsRepository
         return true;
     }
 
-    public async Task<bool> Vote(Guid pollId, List<Guid> optionsIds)
-    {
-        await _context.Options
-            .Where(o => o.PollId == pollId)
-            .Where(o => optionsIds.Contains(o.Id))
-            .ExecuteUpdateAsync(s =>
-                s.SetProperty(
-                    o => o.VotesCount,
-                    o => o.VotesCount + 1
-                ));
-        
-        await _context.SaveChangesAsync();
-        return true;
-    }
+    // public async Task<bool> Vote(Guid pollId, List<Guid> optionsIds)
+    // {
+    //     await _context.Options
+    //         .Where(o => o.PollId == pollId)
+    //         .Where(o => optionsIds.Contains(o.Id))
+    //         .ExecuteUpdateAsync(s =>
+    //             s.SetProperty(
+    //                 o => o.VotesCount,
+    //                 o => o.VotesCount + 1
+    //             ));
+    //     
+    //     await _context.SaveChangesAsync();
+    //     return true;
+    // }
+    
+    
+
+    // public async Task DeleteVote(Guid pollId, Guid userId)
+    // {
+    //     await _context.Votes
+    //         .Where(v => v.PollId == pollId && v.UserId == userId)
+    //         .ExecuteDeleteAsync();
+    //     
+    //     await _context.SaveChangesAsync();
+    // }
+
+    // public async Task<List<VoteEntity>> GetVotesAsync(Guid pollId)
+    // {
+    //     return await _context.Votes
+    //         .Where(v => v.PollId == pollId)
+    //         .ToListAsync();
+    // }
+    
 }

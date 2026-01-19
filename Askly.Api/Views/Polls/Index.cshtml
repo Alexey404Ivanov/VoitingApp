@@ -1,5 +1,5 @@
 
-@model List<PollDto>
+@model List<Askly.Application.DTOs.Polls.PollDto>
 
 @{
     ViewData["Title"] = "Список опросов";
@@ -7,8 +7,44 @@
 
 @section HeaderExtras
 {
-    <button id="btnAdd" class="add-button">Добавить</button>
+    <style>
+        .header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 12px;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Доп. класс, чтобы не ломать существующий стиль add-button */
+        .btn-palette {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: fit-content;
+            box-sizing: border-box;
+        }
+    </style>
+
+    <div class="header-actions">
+        <button id="btnAdd" class="add-button btn-palette">Создать опрос</button>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <button class="add-button btn-palette" onclick="openProfile()">Профиль</button>
+            <button class="add-button btn-palette" onclick="logout()">Выйти</button>
+        }
+        else
+        {
+            <button id="btnRegister" class="add-button btn-palette" onclick="switchToRegistration()">Зарегистрироваться</button>
+            <button id="btnLogin" class="add-button btn-palette" onclick="switchToAuthorization()">Войти</button>
+        }
+    </div>
 }
+
 
 <main class="main-content" role="main">
     <div class="poll-grid" id="pollGrid" aria-live="polite">
@@ -65,8 +101,12 @@
             </div>
         </div>
     </div>
-
-    <script src="~/js/index.js"></script>
     
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+    
+    <script>
+        window.isAuthenticated = @(User.Identity?.IsAuthenticated == true ? "true" : "false");
+    </script>
+    <script src="~/js/index.js"></script>
 </main>
 

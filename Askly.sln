@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Askly.Api", "Askly.Api\Askl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Askly.Infrastructure", "Askly.Infrastructure\Askly.Infrastructure.csproj", "{6D5ADF9C-1AAC-4683-BE1A-B36EFD2AE7C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Askly.Web", "Askly.Web\Askly.Web.csproj", "{DC2FDEB5-7D9C-4740-B9A0-5F36B524A834}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Askly.Domain", "Askly.Domain\Askly.Domain.csproj", "{ED54527C-8B69-47EF-B651-55BF75B42938}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Askly.Application", "Askly.Application\Askly.Application.csproj", "{C1777230-BF63-49AD-9459-54D9CA093B9E}"
@@ -24,10 +22,6 @@ Global
 		{6D5ADF9C-1AAC-4683-BE1A-B36EFD2AE7C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D5ADF9C-1AAC-4683-BE1A-B36EFD2AE7C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D5ADF9C-1AAC-4683-BE1A-B36EFD2AE7C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC2FDEB5-7D9C-4740-B9A0-5F36B524A834}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC2FDEB5-7D9C-4740-B9A0-5F36B524A834}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC2FDEB5-7D9C-4740-B9A0-5F36B524A834}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC2FDEB5-7D9C-4740-B9A0-5F36B524A834}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ED54527C-8B69-47EF-B651-55BF75B42938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ED54527C-8B69-47EF-B651-55BF75B42938}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED54527C-8B69-47EF-B651-55BF75B42938}.Release|Any CPU.ActiveCfg = Release|Any CPU

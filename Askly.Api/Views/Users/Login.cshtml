@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Вход в аккаунт";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/details.css" />
+    <style>
+        /* Контейнер */
+        .poll-details {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .poll-form fieldset {
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Блок полей */
+        .poll-form .poll-options {
+            margin: 6px 0 16px;
+            padding: 0;
+        }
+
+        .poll-form .poll-options .option-item {
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        /* Центрируем "белую область" инпутов и выравниваем отступы */
+        .poll-form .poll-options .option-item input {
+            display: block;
+            width: min(100%, 420px);
+            margin: 0 auto;
+            box-sizing: border-box;
+            font-size: 18px;
+            line-height: 1.5;
+            padding: 14px 16px;
+            min-height: 52px;
+            border: 1px solid #c9ced6;
+            border-radius: 16px;
+            background: #fff;
+            color: #111827;
+            outline: none;
+            transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+        }
+
+        .poll-form .poll-options .option-item input::placeholder {
+            color: #4b5563;
+            opacity: 1;
+            font-size: 17px;
+        }
+
+        .poll-form .poll-options .option-item input:focus {
+            border-color: #6a9cff;
+            box-shadow: 0 0 0 3px rgba(106, 156, 255, 0.2);
+            background: #fff;
+        }
+
+        .vote-button#loginBtn {
+            font-size: 18px;
+            padding: 12px 18px;
+            border-radius: 10px;
+        }
+    </style>
+}
+
+<main class="main-content" role="main">
+    <div class="poll-details">
+        <h2 class="poll-question">Вход</h2>
+
+        <form method="post" id="loginForm" class="poll-form">
+            <fieldset>
+                <div class="poll-options">
+                    <label class="option-item">
+                        <input type="text" name="Email" id="loginEmail" placeholder="E-mail" />
+                    </label>
+
+                    <label class="option-item">
+                        <input type="password" name="Password" id="loginPassword" placeholder="Пароль" />
+                    </label>
+                </div>
+            </fieldset>
+
+            <div id="validationContainer"></div>
+
+            <button type="submit" id="loginBtn" class="vote-button">Войти</button>
+        </form>
+    </div>
+
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+</main>
+
+<script src="/js/login.js"></script>

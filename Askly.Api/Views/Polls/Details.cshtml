@@ -13,7 +13,6 @@
          data-model="@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model))">
     </div>
     
-    
     <div class="poll-details">
         <h2 class="poll-question">@Model.Title</h2>
         <form method="post" id="pollForm">
@@ -50,6 +49,10 @@
 
     <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 </main>
+
+<script id="poll-data" type="application/json">
+@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model))
+</script>
 
 <script> 
     (function () {
