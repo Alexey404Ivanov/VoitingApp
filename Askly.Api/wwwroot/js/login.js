@@ -40,20 +40,32 @@
             showToast('Не все поля заполнены');
             return;
         }
-
         try {
             await fetch("/api/users/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
                 credentials: "include" // важно для cookie
-            });
+            }).then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error("Пользователь с таким емэйлом не найден");
+                    }
+                    if (response.status === 401) {
+                        throw new Error("Введен неверный пароль");
+                    } 
+                    else {
+                        throw new Error("Неизвестная ошибка при попытке входа");
+                    }
+                }
+            })
+                
 
             window.location.href = "/polls";
         }
         catch (err) {
             console.error(err);
-            showToast("Ошибка входа");
+            showToast(err.message);
         }
     });
 

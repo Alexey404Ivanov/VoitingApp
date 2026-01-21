@@ -12,7 +12,7 @@
 {
     @if (Model.UserId == Guid.Parse(User.FindFirst("userId")!.Value))
     {
-        <button id="deletePoll" class="add-button btn-palette">Удалить опрос</button>
+        <button id="deletePoll" onclick="deletePoll()" class="add-button btn-palette">Удалить опрос</button>
     }
 }
 

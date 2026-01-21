@@ -1,10 +1,10 @@
 ﻿// javascript
-document.addEventListener('DOMContentLoaded', function () {
+// document.addEventListener('DOMContentLoaded', function () {
     const voteBtn = document.getElementById('voteBtn');
-    const deletePoll = document.getElementById('deletePoll');
+    // const deletePoll = document.getElementById('deletePoll');
     const toastContainer = document.getElementById('toastContainer');
     
-    if (!voteBtn) return;
+    // if (!voteBtn) return;
 
     function showToast(message, timeout = 4000) {
         if (!toastContainer) return () => {};
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', function () {
             fetch(`/api/polls/${pollId}/vote`, {
                 method: "DELETE",
-                headers: { "Content-Type": "application/json" },
+                // headers: { "Content-Type": "application/json" },
                 // body: JSON.stringify(selectedIdsAtVote)
             })
                 .then(r => {
@@ -129,9 +129,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return btn;
     }
-
-    deletePoll.addEventListener('click', async function (e) {
-        e.preventDefault();
+    
+    async function deletePoll(){
         const formScope = voteBtn.closest('form') || document;
         const pollInput = formScope.querySelector('input[name="Id"], input[id="Id"], input[type="hidden"]');
         const pollId = pollInput ? String(pollInput.value) : '';
@@ -146,70 +145,90 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error(err);
             showToast("Не удалось удалить опрос");
         }
-    })
+    }
+    
+    // deletePoll.addEventListener('click', async function (e) {
+    //     e.preventDefault();
+    //     const formScope = voteBtn.closest('form') || document;
+    //     const pollInput = formScope.querySelector('input[name="Id"], input[id="Id"], input[type="hidden"]');
+    //     const pollId = pollInput ? String(pollInput.value) : '';
+    //     try {
+    //         await fetch(`/api/polls/${pollId}`, {
+    //             method: "DELETE",
+    //             credentials: "include" // важно для cookie
+    //         });
+    //         window.location.href = "/polls";
+    //     }
+    //     catch (err) {
+    //         console.error(err);
+    //         showToast("Не удалось удалить опрос");
+    //     }
+    // })
     
     // обработчик клика по "Голосовать"
-    voteBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        const formScope = voteBtn.closest('form') || document;
-        const anyChecked = formScope.querySelector('input[type="radio"]:checked, input[type="checkbox"]:checked');
-
-        if (!anyChecked) {
-            showToast('Выберите хотя бы один вариант ответа');
-            return;
-        }
-
-        const pollInput = formScope.querySelector('input[name="Id"], input[id="Id"], input[type="hidden"]');
-        const pollId = pollInput ? String(pollInput.value) : '';
-
-        let optionsIds = [];
-        const checkedCheckboxes = Array.from(formScope.querySelectorAll('input.option-checkbox:checked'));
-        if (checkedCheckboxes.length > 0) {
-            optionsIds = checkedCheckboxes.map(i => String(i.value));
-        } else {
-            const checkedRadio = formScope.querySelector('input[type="radio"]:checked');
-            if (checkedRadio) optionsIds.push(String(checkedRadio.value));
-        }
-
-        const selectedAtVote = optionsIds.slice();
-
-        setInputsDisabled(formScope, true);
-
-        const cancelBtn = createCancelButton(voteBtn, selectedAtVote, pollId, formScope);
-        voteBtn.replaceWith(cancelBtn);
-        showToast('Голос принят');
-
-        fetch(`/api/polls/${pollId}/vote`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(optionsIds)
-        })
-            .then(r => {
-                if (!r.ok) throw new Error("Ошибка голосования");
-                return fetch(`/api/polls/${pollId}/results`, {
+        voteBtn.addEventListener('click', async function (e) {
+            e.preventDefault();
+    
+            const formScope = voteBtn.closest('form') || document;
+            const anyChecked = formScope.querySelector('input[type="radio"]:checked, input[type="checkbox"]:checked');
+    
+            if (!anyChecked) {
+                showToast('Выберите хотя бы один вариант ответа');
+                return;
+            }
+    
+            const pollInput = formScope.querySelector('input[name="Id"], input[id="Id"], input[type="hidden"]');
+            const pollId = pollInput ? String(pollInput.value) : '';
+    
+            let optionIds = [];
+            const checkedCheckboxes = Array.from(formScope.querySelectorAll('input.option-checkbox:checked'));
+            if (checkedCheckboxes.length > 0) {
+                optionIds = checkedCheckboxes.map(i => String(i.value));
+            } else {
+                const checkedRadio = formScope.querySelector('input[type="radio"]:checked');
+                if (checkedRadio) optionIds.push(String(checkedRadio.value));
+            }
+    
+            const selectedAtVote = optionIds.slice();
+    
+            setInputsDisabled(formScope, true);
+    
+            const cancelBtn = createCancelButton(voteBtn, selectedAtVote, pollId, formScope);
+            voteBtn.replaceWith(cancelBtn);
+            try
+            {
+                await fetch(`/api/polls/${pollId}/vote`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({optionIds: optionIds})
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error("Ошибка голосования");
+                    }
+                })
+                
+                await fetch(`/api/polls/${pollId}/results`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" }
-                });
-            })
-            .then(r => {
-                if (!r.ok) throw new Error("Ошибка получения результатов");
-                return r.json();
-            })
-            .then(results => {
-                applyResultsToOptions(results, formScope);
-            })
-            .catch(err => {
+                }).then(r => {
+                    if (!r.ok) throw new Error("Ошибка получения результатов");
+                    return r.json();
+                }).then(results => {
+                    applyResultsToOptions(results, formScope);
+                })
+            }
+           
+            catch (err) {
                 console.error(err);
-                showToast('Произошла ошибка при голосовании');
+                showToast(err.message);
                 try {
                     const currentCancel = formScope.querySelector('#cancelBtn');
                     if (currentCancel && currentCancel.parentNode) currentCancel.replaceWith(voteBtn);
                 } finally {
                     setInputsDisabled(formScope, false);
                 }
-            });
-    });
+            }
+        });
 
     // --- ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ, ЕСЛИ ПОЛЬЗОВАТЕЛЬ УЖЕ ГОЛОСОВАЛ ---
 
@@ -264,4 +283,4 @@ document.addEventListener('DOMContentLoaded', function () {
                 showToast('Не удалось загрузить результаты голосования');
             });
     })();
-});
+// });

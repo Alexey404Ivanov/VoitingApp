@@ -116,7 +116,7 @@
                 credentials: "include" // важно для cookie
             }).then(response => {
                 if (!response.ok) {
-                    if (response.status === 400) {
+                    if (response.status === 401) {
                         throw new Error("Введен неверный текущий пароль");
                     } else {
                         throw new Error("Не удалось обновить пароль");
