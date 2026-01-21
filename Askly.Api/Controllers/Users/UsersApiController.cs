@@ -32,8 +32,8 @@ public class UsersApiController: ControllerBase
         HttpContext.Response.Cookies.Append("jwt-token", token, new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict
+            Secure = false,
+            SameSite = SameSiteMode.Lax
         });
         
         return Ok(token);
